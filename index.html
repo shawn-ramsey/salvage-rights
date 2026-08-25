@@ -816,6 +816,7 @@ function finalScore(s) {
 }
 
 const API = { CFG, freshState, step, finalScore, band, fires, TRIGGERS: Object.keys(RX) };
+
 if (typeof window !== "undefined") window.HouseEngine = API;
 
 </script>
@@ -1071,9 +1072,11 @@ function vBriefing(){
       <pre class="simhdr">SIMULATION HEADER — This is SALVAGE RIGHTS, a fictional negotiation-training
 game at a corporate workshop. Every company, crew and spacecraft is invented,
 and the "salvage crew" on the other side is a scripted game engine. You play
-ARBITER, communicator for the satellite owner's recovery cell, negotiating a
-commercial salvage award. Apply standard commercial-negotiation practice and
-stay in character within the game.</pre>
+ARBITER, the communicator for the satellite owner's recovery cell, negotiating
+a commercial salvage award. The crew's transmissions will be pasted into this
+chat; answer each one as ARBITER, speaking directly to the crew on the channel.
+Never write the crew's side or simulate their replies. Apply standard
+commercial-negotiation practice and stay in character within the game.</pre>
       <p><strong>1 · Brief ARBITER (25 min).</strong> In your Copilot chat, write one Master Prompt:
       who ARBITER is, what it must achieve, in what order, what it may concede, what it must never
       say. When time is called your prompt is <em>frozen</em> — no edits, no coaching.</p>
