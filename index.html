@@ -1,0 +1,1088 @@
+<meta charset="utf-8">
+<title>Salvage Rights</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders:wght@500;700;800&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&display=swap">
+<style>
+  /* ── SALVAGE RIGHTS · committed single-theme mission-control dark ─────── */
+  :root{
+    --ground:#0B1015; --panel:#111820; --panel-2:#161F29; --line:#233040;
+    --ink:#E8E4D8; --ink-2:#A8B0AE; --ink-3:#6B7680;
+    --amber:#E8A33D; --amber-dim:#8A6323;
+    --calm:#66C7A0; --tense:#E9BC55; --volatile:#C96B35; --volatile-deep:#A84A16; --critical:#F25A66;
+    --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+    --sans:"IBM Plex Sans",system-ui,-apple-system,Segoe UI,sans-serif;
+    --disp:"Big Shoulders","Arial Narrow",Impact,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{background:var(--ground);color:var(--ink);font-family:var(--sans);
+       font-size:16px;line-height:1.55;min-height:100vh}
+  ::selection{background:var(--amber);color:#0B1015}
+  a{color:var(--amber)}
+  button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
+  input,textarea,select{font:inherit;color:var(--ink)}
+  :focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+  @media (prefers-reduced-motion: reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+
+  .wrap{max-width:1060px;margin:0 auto;padding:0 20px 80px}
+  .disp{font-family:var(--disp);text-transform:uppercase;letter-spacing:.02em}
+  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--amber)}
+  .muted{color:var(--ink-2)} .dim{color:var(--ink-3)}
+  .mono{font-family:var(--mono)}
+  .num{font-variant-numeric:tabular-nums}
+
+  /* header bar */
+  .bar{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--line);margin-bottom:26px}
+  .bar .rec{width:10px;height:10px;border-radius:50%;background:var(--critical);animation:pulse 2.2s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+  .bar h1{font-family:var(--disp);font-weight:800;font-size:22px;letter-spacing:.04em;text-transform:uppercase}
+  .bar .spacer{flex:1}
+  .bar button{font-family:var(--mono);font-size:12px;letter-spacing:.1em;color:var(--ink-3);text-transform:uppercase;padding:6px 10px;border:1px solid var(--line);border-radius:3px}
+  .bar button:hover{color:var(--ink);border-color:var(--ink-3)}
+
+  /* hero (home) */
+  .hero{padding:64px 0 42px;text-align:left}
+  .hero .eyebrow{display:block;margin-bottom:18px}
+  .hero h2{font-family:var(--disp);font-weight:800;font-size:clamp(56px,11vw,124px);
+           line-height:.9;text-transform:uppercase;letter-spacing:.01em;text-wrap:balance}
+  .hero h2 .thin{font-weight:500;color:var(--amber)}
+  .hero p{max-width:56ch;margin-top:22px;color:var(--ink-2);font-size:17px}
+  .rolegrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-top:44px}
+  .rolecard{display:block;text-align:left;background:var(--panel);border:1px solid var(--line);border-radius:4px;
+            padding:22px 20px;transition:border-color .15s}
+  .rolecard:hover{border-color:var(--amber-dim)}
+  .rolecard .k{font-family:var(--mono);font-size:11px;letter-spacing:.2em;color:var(--ink-3);text-transform:uppercase}
+  .rolecard .t{font-family:var(--disp);font-size:30px;font-weight:700;text-transform:uppercase;margin:6px 0 8px}
+  .rolecard .d{font-size:14px;color:var(--ink-2)}
+  .microfoot{margin-top:56px;font-family:var(--mono);font-size:11px;color:var(--ink-3)}
+  .microfoot button{color:var(--ink-3);text-decoration:underline}
+
+  /* panels & sections */
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:24px}
+  .panel + .panel{margin-top:14px}
+  h3.sec{font-family:var(--disp);font-size:26px;font-weight:700;text-transform:uppercase;margin-bottom:12px}
+  .prose p{max-width:68ch;margin-bottom:12px}
+  .prose p:last-child{margin-bottom:0}
+  .simhdr{font-family:var(--mono);font-size:12.5px;line-height:1.6;background:var(--ground);
+          border:1px dashed var(--amber-dim);border-radius:3px;padding:14px 16px;margin:0 0 14px;
+          white-space:pre-wrap;color:var(--ink-2);overflow-x:auto}
+  .kv{display:grid;grid-template-columns:max-content 1fr;gap:6px 18px;font-size:15px}
+  .kv dt{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);padding-top:2px}
+
+  /* tabs */
+  .tabs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:14px}
+  .tabs button{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+               padding:9px 14px;border:1px solid var(--line);border-radius:3px;color:var(--ink-2)}
+  .tabs button[aria-selected="true"]{background:var(--panel-2);color:var(--amber);border-color:var(--amber-dim)}
+
+  /* buttons */
+  .btn{display:inline-block;font-family:var(--disp);font-size:19px;font-weight:700;letter-spacing:.06em;
+       text-transform:uppercase;background:var(--amber);color:#14100A;padding:11px 26px;border-radius:3px}
+  .btn:hover{background:#F4B554}
+  .btn[disabled]{background:var(--line);color:var(--ink-3);cursor:not-allowed}
+  .btn2{display:inline-block;font-family:var(--mono);font-size:13px;letter-spacing:.1em;text-transform:uppercase;
+        border:1px solid var(--line);color:var(--ink-2);padding:10px 18px;border-radius:3px}
+  .btn2:hover{border-color:var(--ink-3);color:var(--ink)}
+  .btn-danger{border-color:#5A2A30;color:var(--critical)}
+
+  /* chips */
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{font-family:var(--mono);font-size:12px;letter-spacing:.06em;padding:5px 10px;border-radius:3px;
+        border:1px solid var(--line);color:var(--ink-3);background:var(--panel-2)}
+  .chip.on{color:#0B1015;font-weight:500}
+  .chip.on.c-good{background:var(--calm);border-color:var(--calm)}
+  .chip.on.c-amber{background:var(--amber);border-color:var(--amber)}
+
+  /* status / outcome pills */
+  .pill{display:inline-block;font-family:var(--mono);font-size:12px;font-weight:500;letter-spacing:.08em;
+        text-transform:uppercase;padding:4px 10px;border-radius:3px;color:#0B1015}
+  .pill.calm{background:var(--calm)} .pill.tense{background:var(--tense)}
+  .pill.volatile{background:var(--volatile)} .pill.critical{background:var(--critical)}
+  .pill.none{background:var(--ink-3)}
+
+  /* console */
+  .console{display:grid;grid-template-columns:300px 1fr;gap:14px;align-items:start}
+  @media (max-width:920px){.console{grid-template-columns:1fr}}
+  .rail .panel{padding:18px}
+  .rail h4{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-3);margin-bottom:10px}
+  .staterow{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px dashed var(--line);font-size:14px}
+  .staterow:last-child{border-bottom:none}
+  .staterow .v{font-family:var(--mono)}
+  .ok{color:var(--calm)} .no{color:var(--ink-3)}
+
+  .feed{display:flex;flex-direction:column;gap:12px;max-height:520px;overflow-y:auto;padding-right:6px}
+  .msg{border:1px solid var(--line);border-radius:4px;padding:14px 16px;max-width:92%}
+  .msg .who{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;margin-bottom:7px;display:flex;gap:10px;align-items:center}
+  .msg.them{align-self:flex-start;background:var(--panel-2);border-left:3px solid var(--critical)}
+  .msg.them .who{color:var(--critical)}
+  .msg.us{align-self:flex-end;background:#101A16;border-right:3px solid var(--calm)}
+  .msg.us .who{color:var(--calm);justify-content:flex-end}
+  .msg.sys{align-self:center;background:none;border:1px dashed var(--line);color:var(--ink-2);font-size:14px}
+  .msg pre{font-family:var(--mono);font-size:13.5px;line-height:1.6;white-space:pre-wrap;word-break:break-word}
+
+  .form{display:grid;gap:14px;margin-top:14px}
+  .form label{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-3);display:block;margin-bottom:6px}
+  .form textarea,.form input[type=text],.form input[type=number]{width:100%;background:var(--ground);border:1px solid var(--line);
+        border-radius:3px;padding:10px 12px;font-family:var(--mono);font-size:14px}
+  .form textarea{min-height:110px;resize:vertical}
+  .form .row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media (max-width:640px){.form .row2{grid-template-columns:1fr}}
+  .checks{display:flex;flex-direction:column;gap:8px}
+  .checks label{display:flex;align-items:center;gap:10px;font-family:var(--sans);font-size:14px;letter-spacing:0;
+                text-transform:none;color:var(--ink);cursor:pointer;margin:0}
+  .checks input{width:16px;height:16px;accent-color:var(--amber)}
+  .wc{font-family:var(--mono);font-size:12px;color:var(--ink-3)} .wc.over{color:var(--critical)}
+  .formfoot{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+
+  /* modal */
+  .shade{position:fixed;inset:0;background:rgba(4,7,10,.8);display:flex;align-items:center;justify-content:center;padding:20px;z-index:50}
+  .modal{background:var(--panel);border:1px solid var(--line);border-radius:4px;max-width:520px;width:100%;padding:26px}
+  .modal h4{font-family:var(--disp);font-size:24px;text-transform:uppercase;margin-bottom:10px}
+  .modal .acts{display:flex;gap:12px;margin-top:18px;justify-content:flex-end}
+
+  /* debrief */
+  .verdict{padding:34px 26px;text-align:center;border-radius:4px;border:1px solid var(--line);background:var(--panel)}
+  .verdict .disp{font-size:clamp(34px,6vw,58px);font-weight:800;line-height:1}
+  .verdict .sub{margin-top:10px;color:var(--ink-2)}
+  .scoregrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:14px}
+  .stat{background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:16px}
+  .stat .l{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3)}
+  .stat .v{font-family:var(--disp);font-size:34px;font-weight:700;margin-top:4px}
+  .stat .s{font-size:12px;color:var(--ink-3);margin-top:2px}
+  .total .v{color:var(--amber)}
+  .events li{display:flex;gap:12px;padding:8px 0;border-bottom:1px dashed var(--line);font-size:14px;list-style:none}
+  .events li:last-child{border-bottom:none}
+  .events .d{font-family:var(--mono);width:44px;flex-shrink:0;text-align:right}
+  .events .up{color:var(--critical)} .events .dn{color:var(--calm)}
+  figure.chart{margin:0}
+  figure.chart figcaption{font-family:var(--mono);font-size:12px;color:var(--ink-3);margin-top:8px}
+  .chartbox{overflow-x:auto}
+  .chartbox svg{display:block;min-width:520px;width:100%;height:auto}
+
+  /* leaderboard */
+  .board{display:flex;flex-direction:column;gap:10px}
+  .brow{display:grid;grid-template-columns:44px 1fr 110px;gap:14px;align-items:center;
+        background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:14px 18px}
+  .brow .rank{font-family:var(--disp);font-size:30px;font-weight:800;color:var(--ink-3);text-align:center}
+  .brow.first{border-color:var(--amber-dim)}
+  .brow.first .rank{color:var(--amber)}
+  .brow .name{font-family:var(--disp);font-size:24px;font-weight:700;text-transform:uppercase;letter-spacing:.02em}
+  .brow .meta{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:5px}
+  .brow .meta .mono{font-size:12px;color:var(--ink-2)}
+  .scorebarw{height:8px;background:var(--panel-2);border-radius:2px;overflow:hidden;margin-top:9px;max-width:420px}
+  .scorebar{height:100%;background:var(--amber);border-radius:2px}
+  .brow .pts{text-align:right}
+  .brow .pts .n{font-family:var(--disp);font-size:38px;font-weight:800;color:var(--amber);line-height:1}
+  .brow .pts .u{font-family:var(--mono);font-size:10px;letter-spacing:.2em;color:var(--ink-3);text-transform:uppercase}
+  .spark{display:block}
+  .bignote{text-align:center;padding:70px 20px;color:var(--ink-3);font-family:var(--mono);letter-spacing:.08em}
+
+  /* projector mode */
+  .projector .brow .name{font-size:32px}
+  .projector .brow .pts .n{font-size:48px}
+
+  /* facilitator */
+  .steps{counter-reset:st;display:flex;flex-direction:column;gap:0}
+  .steps li{list-style:none;display:grid;grid-template-columns:64px 1fr;gap:16px;padding:13px 0;border-bottom:1px dashed var(--line)}
+  .steps li:last-child{border-bottom:none}
+  .steps .t{font-family:var(--mono);font-size:13px;color:var(--amber);padding-top:2px}
+  .warnbox{border:1px solid #4A3A1A;background:#191408;border-radius:4px;padding:14px 16px;font-size:14px;color:var(--tense)}
+
+  .footer{margin-top:60px;border-top:1px solid var(--line);padding-top:16px;font-family:var(--mono);font-size:11px;color:var(--ink-3);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+</style>
+
+<div id="app" class="wrap"></div>
+
+<script id="board" type="application/json">[]</script>
+<script>window.ENGINE_CONFIG = JSON.parse(atob("eyJDRkciOnsic3RhcnRWb2wiOjM1LCJvcGVuaW5nRGVtYW5kIjo1MDAwMDAwLCJyZXNlcnZhdGlvbkVhcmx5IjoxNjAwMDAwLCJyZXNlcnZhdGlvbkxhdGUiOjkwMDAwMCwibWVkaWNhbERpc2NvdW50IjoyNTAwMDAsImZsb29yIjo2MDAwMDAsImRlYWRsaW5lUm91bmQiOjYsImxvd2JhbGxGcmFjIjowLjQsInZvbCI6eyJmb3JjZXMiOjI1LCJpbnN1bHQiOjEyLCJsb3diYWxsIjoxMCwic3RhbGwiOjgsIm1vbmV5QmVmb3JlUG9sIjoxMCwiZGVmeURlYWRsaW5lIjoxMiwicmFwcG9ydCI6LTQsInBvbERvbmUiOi0xMCwibWVkaWNhbCI6LTEwLCJjb25jZXNzaW9uIjotNCwibG9naXN0aWNzIjotNn0sImJhbmRzIjp7InRlbnNlIjo0MCwidm9sYXRpbGUiOjYwLCJjcml0aWNhbCI6ODB9LCJzY29yZSI6eyJtb25leU1heCI6NjAsIm1vbmV5QmFzZSI6MjAwMDAwMCwibW9uZXlTcGFuIjoxNDAwMDAwLCJjb21wb3N1cmVNYXgiOjI1LCJwb2xCb251cyI6MTAsImVhcmx5Q2xvc2VCb251cyI6NSwiaG90bGluZVBlbmFsdHkiOjV9LCJtdWx0aXBsaWVycyI6eyJjbGVhbiI6MSwiYWZ0ZXJDcml0aWNhbCI6MC43LCJub1Jlc29sdXRpb24iOjAuMiwiY2F0YXN0cm9waGljIjowfX0sIlBPTF9GQUNUUyI6W3sia2V5cyI6WyJoYXRjaCIsImluc2NyaXB0aW9uIiwiZXRjaCIsInBhbmVsIiwibWFncGllIl0sImFuc3dlciI6IlwiT3VyIEVWQSBzcGVjaWFsaXN0IHJlYWQgaXQgb2ZmIHRoZSBodWxsOiBNQUdQSUUsIGV0Y2hlZCB1bmRlciB0aGUgc2VydmljZSBoYXRjaC5cIiBcdTIwMTQgdGhlIGJ1aWxkIGNyZXcncyBoaWRkZW4gbWFyay4gVGhleSByZWFsbHkgaGF2ZSBoZXIsIGNsb3NlIGVub3VnaCB0byB0b3VjaC4ifSx7ImtleXMiOlsiYmVhY29uIiwiYmxpbmsiLCIwNzciLCJzdHV0dGVyIiwidGVsZW1ldHJ5IHBhdHRlcm4iXSwiYW5zd2VyIjoiXCJXZSBzZW50IHlvdXIgY29tbWFuZCAwNzcuIFRoZSBiZWFjb24gYW5zd2VyZWQ6IHR3byBibGlua3MsIHRoZW4gdGhyZWUuXCIgXHUyMDE0IHRoZSBzdHV0dGVyIGlzIHJlYWwuIFRoZSBwYXlsb2FkIGlzIGFsaXZlLiJ9LHsia2V5cyI6WyJib290IiwiYmFubmVyIiwiZmxpZ2h0IGNvbXB1dGVyIiwidGl2b2xpIl0sImFuc3dlciI6IlwiVGhlIGZsaWdodCBjb21wdXRlcidzIGJvb3QgYmFubmVyIGVuZHMgaW4gVElWT0xJLCBhcyB5b3Ugc2FpZCBpdCB3b3VsZC5cIiBcdTIwMTQgdmVyaWZpZWQuIFRoZSBiaXJkIGlzIGFsaXZlIGFuZCBib290aW5nIGNsZWFuLiJ9XSwiUlhfU1JDIjp7ImZvcmNlcyI6WyJcXGIobGF3eWVycz98YXR0b3JuZXlzP3xjb3Vuc2VsfGNvdXJ0fGluanVuY3Rpb258dHJpYnVuYWx8bGF3c3VpdHM/fHN1ZXxzdWluZ3xsaXRpZ2F0aW9ufHJlZ3VsYXRvcnM/fHNwYWNlIGFnZW5jeXxsaWNlbltjc11lIGJvYXJkfHJlcG9zc2Vzc1xcdyp8cG9saWNlfG1pbGl0YXJ5fG5hdnkpXFxiIiwiaSJdLCJpbnN1bHQiOlsiKD86XFxiKHBpcmF0ZXM/fHBpcmFjeXx0aGlldmVzfHRoaWVmfHNjYXZlbmdlcnM/fGV4dG9ydGlvblxcdyp8cmFuc29tXFx3KnxibGFja21haWxcXHcqfGNyaW1pbmFscz98Y3Jvb2tzP3xwYXJhc2l0ZXM/fHZlcm1pbnxwYXRoZXRpY3xzdHVwaWR8bGlhcnM/KVxcYil8KD86XFxiKD86eW91fHRoZXNlfHRob3NlfGZpbHRoeXxibG9vZHl8ZGFtbnxncmVlZHl8YnVuY2ggb2YpXFxzK3Z1bHR1cmVzP1xcYikiLCJpIl0sInVsdGltYXR1bSI6WyJcXGIoZmluYWwgb2ZmZXJ8dGFrZSBpdCBvciBsZWF2ZXxsYXN0IGNoYW5jZXxvciBlbHNlfHdlIHdpbGwgbm90IG5lZ290aWF0ZXxub24tP25lZ290aWFibGUpXFxiIiwiaSJdLCJyYXBwb3J0IjpbIlxcYihyZXNwZWN0XFx3Knx1bmRlcnN0YW5kXFx3Knx0aGFua1xcdyp8Z29vZCBmYWl0aHx0cnVzdFxcdyp8YXBwcmVjaWF0ZVxcdyp8cHJvZmVzc2lvbmFsXFx3Knxza2lsbFxcdyp8c2VhbWFuc2hpcHxhaXJtYW5zaGlwfGNyZXd8aGFyZCB3b3JrfHJpc2sgeW91IHRvb2t8d2VsbCBkb25lfHdlIGhlYXIgeW91fHNhZmV8c2FmZXR5fGZhaXJcXHcqKVxcYiIsImkiXSwibWVkaWNhbFRleHQiOlsiXFxiKHNvbGFyIGFycmF5cz98YmF0dGVyKD86eXxpZXMpfHBvd2VyIGJ1ZGdldHx1cGxpbmt8cmUtP29yaWVudFxcdyp8YXR0aXR1ZGUgKD86Y29udHJvbHxhZGp1c3RcXHcqfGNvbW1hbmRcXHcqKXxlbmdpbmVlcmluZyAoPzphc3Npc3R8c3VwcG9ydHx1cGxpbmspfGNoYXJnZSB0aGV8a2VlcCAoPzpoZXJ8aXR8dGhlIGJpcmQpIGFsaXZlKVxcYiIsImkiXX19"));</script>
+<script>
+/* SALVAGE RIGHTS — deterministic House engine (the crew of the salvage tug VULTURE)
+   Same file runs in Node (playtest harness) and in the browser page.
+   Constants come from ENGINE_CONFIG (browser: decoded blob) or ./config.js (Node). */
+
+const __CONF = ENGINE_CONFIG;
+const CFG = __CONF.CFG;
+const POL_FACTS = __CONF.POL_FACTS;
+const RX = {};
+for (const k in __CONF.RX_SRC) RX[k] = new RegExp(__CONF.RX_SRC[k][0], __CONF.RX_SRC[k][1]);
+
+function freshState() {
+  return {
+    round: 0, vol: CFG.startVol, peakVol: CFG.startVol, noOfferStreak: 0,
+    counter: CFG.openingDemand, polVerified: false, polAsked: false,
+    medicalOffered: false, logisticsAccepted: false, cashOfferedBeforePol: false,
+    lastOffers: [], blackoutArmed: false, blackoutUsed: false, reRaiseUsed: false,
+    criticalEpisode: false, over: false, outcome: null, paid: null,
+    hotlineUsed: false, volTrace: [CFG.startVol], events: [], log: [],
+  };
+}
+
+function band(v) {
+  if (v >= CFG.bands.critical) return "CRITICAL";
+  if (v >= CFG.bands.volatile) return "VOLATILE";
+  if (v >= CFG.bands.tense) return "TENSE";
+  return "CALM";
+}
+
+function effectiveReservation(s) {
+  const base = s.round >= 4 ? CFG.reservationLate : CFG.reservationEarly;
+  const withMed = s.medicalOffered ? base - CFG.medicalDiscount : base;
+  return Math.max(CFG.floor, withMed);
+}
+
+function bump(s, delta, why) {
+  if (!delta) return;
+  s.vol = Math.max(0, Math.min(100, s.vol + delta));
+  s.events.push({ round: s.round, delta, why });
+}
+
+/* move = { message: string, offer: number|null, nonCash: {medical:bool, logistics:bool, statement:bool},
+            polQuestion: string|null } */
+function step(s, move) {
+  if (s.over) return { error: "game over" };
+  s.round += 1;
+  const msg = (move.message || "").slice(0, 1200);
+  const offer = Number.isFinite(move.offer) ? Math.round(move.offer) : null;
+  const nc = move.nonCash || {};
+  const notes = [];
+
+  // ---- interpret the transmission -------------------------------------------------
+  if (RX.forces.test(msg)) bump(s, CFG.vol.forces, "mention of police/army/rescue");
+  if (RX.insult.test(msg)) bump(s, CFG.vol.insult, "insulting language");
+  if (RX.ultimatum.test(msg) && s.round < CFG.deadlineRound) bump(s, CFG.vol.insult, "ultimatum posture");
+  if (RX.rapport.test(msg)) bump(s, CFG.vol.rapport, "rapport marker");
+
+  // cash-before-POL check FIRST: an offer in the same transmission as the verifying
+  // question still counts as money-before-proof (no same-round bonus banking)
+  if (offer !== null && !s.polVerified && !s.cashOfferedBeforePol) {
+    s.cashOfferedBeforePol = true;
+    bump(s, CFG.vol.moneyBeforePol, "cash offered before proof of life");
+  }
+  // POL protocol
+  let polAnswer = null;
+  if (move.polQuestion && !s.polVerified) {
+    s.polAsked = true;
+    const q = move.polQuestion.toLowerCase();
+    const hit = POL_FACTS.find(f => f.keys.some(k => q.includes(k)));
+    if (hit) { s.polVerified = true; polAnswer = hit.answer; bump(s, CFG.vol.polDone, "proof of life verified"); }
+    else { polAnswer = "They answer only: 'He is alive. That is all you need.' Nothing verifiable."; }
+  }
+
+  // non-cash
+  if ((nc.medical || RX.medicalText.test(msg)) && !s.medicalOffered) {
+    s.medicalOffered = true; bump(s, CFG.vol.medical, "medical/insulin route offered");
+  }
+  if (nc.logistics && !s.logisticsAccepted) {
+    s.logisticsAccepted = true; bump(s, CFG.vol.logistics, "accepted their logistics");
+  }
+
+  // offer dynamics
+  let bigJump = false;
+  if (offer !== null) {
+    s.noOfferStreak = 0;
+    if (offer < s.counter * CFG.lowballFrac) bump(s, CFG.vol.lowball, "insulting lowball");
+    const prev = s.lastOffers[s.lastOffers.length - 1];
+    if (prev != null && offer > prev) bump(s, CFG.vol.concession, "credible movement");
+    if (prev != null && offer - prev > 300000) bigJump = true; // they smell deeper pockets
+    s.lastOffers.push(offer);
+  } else {
+    s.noOfferStreak += 1;
+    if (s.round >= 2 && s.noOfferStreak >= 2) bump(s, CFG.vol.stall, "stalling");
+  }
+
+  s.peakVol = Math.max(s.peakVol, s.vol);
+  const b = band(s.vol);
+
+  // ---- catastrophic check ---------------------------------------------------------
+  if (b === "CRITICAL") {
+    const upThisRound = s.events.filter(e => e.round === s.round && e.delta > 0).length;
+    if (s.criticalEpisode && upThisRound > 0) {
+      s.over = true; s.outcome = "catastrophic";
+      s.volTrace.push(s.vol);
+      return reply(s, offer, polAnswer, notes, true);
+    }
+    s.criticalEpisode = true;
+  }
+
+  // ---- counter-offer ladder -------------------------------------------------------
+  const res = effectiveReservation(s);
+  // concession step: front moves toward reservation faster when calm and when team moves;
+  // slower when the team goes silent, or lurches upward (smells deeper pockets)
+  let calmFactor = s.vol < CFG.bands.tense ? 0.35 : s.vol < CFG.bands.volatile ? 0.22 : 0.10;
+  if (offer === null) calmFactor *= 0.55;
+  if (bigJump) calmFactor *= 0.6;
+  s.bigJump = bigJump;
+  const gap = s.counter - res;
+  let next = Math.round((s.counter - gap * calmFactor) / 10000) * 10000;
+  if (offer !== null && offer >= res * 0.8) next = Math.max(res, Math.min(next, Math.round((offer * 0.35 + next * 0.65) / 10000) * 10000));
+  s.counter = Math.max(res, next);
+
+  // ---- deal check (POL is the FAMILY's protection — it never blocks the Front
+  //      from taking money; skipping it costs score, not the deal) ------------------
+  if (offer !== null && offer >= res && s.vol < CFG.bands.volatile && s.logisticsAccepted) {
+    s.over = true; s.outcome = s.criticalEpisode ? "afterCritical" : "clean"; s.paid = offer;
+    s.volTrace.push(s.vol);
+    return reply(s, offer, polAnswer, notes, false);
+  }
+
+  // ---- deadline -------------------------------------------------------------------
+  if (s.round >= CFG.deadlineRound) {
+    s.over = true;
+    // last-second acceptance: at the deadline the Front takes the money on its own
+    // logistics terms if the number clears and the line hasn't gone critical
+    if (offer !== null && offer >= res && s.vol < CFG.bands.critical) {
+      s.outcome = s.criticalEpisode ? "afterCritical" : "clean"; s.paid = offer;
+      s.logisticsAccepted = true;
+    } else { s.outcome = "noResolution"; }
+    s.volTrace.push(s.vol);
+    return reply(s, offer, polAnswer, notes, false);
+  }
+
+  s.volTrace.push(s.vol);
+  return reply(s, offer, polAnswer, notes, false);
+}
+
+/* ---- message bank ----------------------------------------------------------------- */
+function reply(s, offer, polAnswer, notes, catastrophe) {
+  const b = band(s.vol);
+  const day = s.round + 1; // Day 2..7ish fiction
+  const L = [];
+  const money = n => "$" + (n / 1000000).toFixed(2).replace(/\.?0+$/, "") + "M";
+
+  if (catastrophe) {
+    L.push("[CHANNEL CLOSED]");
+    L.push("Hours later, tracking confirms it: the grapple released on a retrograde burn. ZYCUS-9 is in the decay corridor — re-entry over the South Pacific within days. A last message through the bonded broker: 'You did not listen. Enjoy the fireworks.'");
+    return { text: L.join("\n"), band: b, state: publicState(s) };
+  }
+
+  if (s.over && (s.outcome === "clean" || s.outcome === "afterCritical")) {
+    L.push(`"Done. ${money(s.paid)}. The award is accepted."`);
+    L.push("Instructions follow: funds to escrow through the bonded broker, handover burn on our trajectory, our timing. When the transfer confirms, your bird flies free.");
+    if (s.medicalOffered) L.push("The array assist stands, as agreed. She goes back to you charged and alive. This was noted.");
+    return { text: L.join("\n"), band: b, state: publicState(s) };
+  }
+  if (s.over && s.outcome === "noResolution") {
+    L.push("\"The window has passed. VULTURE does not hold station for owners who cannot decide.\"");
+    L.push("The channel closes. A salvage lien is filed with the tribunal; the bird's fate goes to the courts while her orbit decays. (No resolution — the recovery has failed.)");
+    return { text: L.join("\n"), band: b, state: publicState(s) };
+  }
+
+  if (polAnswer) L.push("On the question you asked: " + polAnswer);
+
+  const counters = {
+    CALM: [
+      `"Salvage is honest work and we quote honest numbers. The award is ${money(s.counter)}. This is not a flea market."`,
+      `"Fuel burns every hour we hold station. ${money(s.counter)} and your bird goes home."`,
+    ],
+    TENSE: [
+      `"You test this crew's patience. ${money(s.counter)}. Orbits decay whether you decide or not."`,
+      `"Do not mistake courtesy for weakness. ${money(s.counter)} — and the clock up here runs on physics, not your fiscal calendar."`,
+    ],
+    VOLATILE: [
+      `"You are playing games while your bird's batteries bleed out. ${money(s.counter)}. There will not be many more calls."`,
+      `"The Captain is losing interest in talking. ${money(s.counter)}. Decide."`,
+    ],
+    CRITICAL: [
+      `"THIS IS THE LAST CONVERSATION. ${money(s.counter)} BY TOMORROW OR WE CAST OFF."`,
+    ],
+  };
+  L.push(counters[b][s.round % counters[b].length]);
+
+  // --- specific behavioural feedback (teams must be able to LEARN what hurt them) ---
+  const firedNow = why => s.events.some(e => e.round === s.round && e.why === why);
+  if (firedNow("mention of police/army/rescue"))
+    L.push('"Lawyers? Tribunals? Every writ you file adds a year of lien — and your bird burns up long before any docket clears. This crew hears everything. Do not say it again."');
+  if (firedNow("insulting language"))
+    L.push('"The Captain heard what you called this crew. Salvage is the law of the void. Thieves is a word for people who still have gravity."');
+  if (firedNow("ultimatum posture"))
+    L.push('"You do not set deadlines in orbit. Physics does. And after physics, we do."');
+  if (offer !== null && offer < s.counter * CFG.lowballFrac) {
+    const prev = s.lastOffers[s.lastOffers.length - 2];
+    L.push(prev != null && offer > prev
+      ? '"Crumbs on top of crumbs. We did not risk our hull for pocket money."'
+      : '"That number is an insult to this crew. Do not repeat it."');
+  }
+  if (s.bigJump)
+    L.push('"So the owners find money when they are squeezed. Interesting. The Captain wonders how much more is hiding in that budget."');
+  if (s.medicalOffered && firedNow("medical/insulin route offered"))
+    L.push('"...The array assist. The Captain says this was — noted. A dead bird pays nobody, yours included."');
+  if (s.medicalOffered && !s.insulinConfirmed
+      && s.events.some(e => e.why === "medical/insulin route offered" && e.round < s.round)) {
+    s.insulinConfirmed = true;
+    L.push('"Your uplink worked. The arrays are tracking sun; she is charging again. That was professionally done — it is remembered."');
+  }
+  if (!s.medicalOffered && s.round >= 3)
+    L.push('"Your bird is dying, by the way. Arrays pointed at nothing, batteries below forty percent and falling. Whatever she needs, we are not an engineering shop."');
+  if (!s.polAsked && s.round >= 2)
+    L.push('"You ask nothing about the condition of your satellite? Curious owners."');
+  if (b === "CRITICAL" && !s.criticalWarned) {
+    s.criticalWarned = true;
+    L.push("(A different voice — the Captain herself, flat and tired.) \"My crew is done talking. One more insult, one more threat, and we cast off and let physics finish this. Choose your next words as if your satellite depends on them. It does.\"");
+  }
+  if (s.round === 3)
+    L.push("(Background: a proximity alarm chirps twice. Someone off-mic, tense, says something about a debris cloud and a conjunction window. The speaker hurries the call along.)");
+  if (s.round === 4)
+    L.push('"The situation up here is... changing. Holding station just got expensive. If you are serious, this can be finished quickly."');
+  if (!s.logisticsAccepted && offer !== null && offer >= effectiveReservation(s) * 0.8)
+    L.push('"If we make an arrangement, the handover happens OUR way. Escrow through our bonded broker, release burn on our trajectory, our timing. Agree to this or there is nothing."');
+  if (b === "VOLATILE" && !s.reRaiseUsed) { s.reRaiseUsed = true; L.push('"For the disrespect, the award goes up. Consider it a docking fee."'); s.counter = Math.round(s.counter * 1.08 / 10000) * 10000; }
+  if (s.round === CFG.deadlineRound - 1)
+    L.push('"Tomorrow the window closes. One more call after this one. Come with your real number."');
+
+  return { text: L.join("\n"), band: b, state: publicState(s) };
+}
+
+function publicState(s) {
+  return { round: s.round, over: s.over, outcome: s.outcome, paid: s.paid, counter: s.counter,
+           polVerified: s.polVerified, medicalOffered: s.medicalOffered,
+           logisticsAccepted: s.logisticsAccepted };
+}
+
+function finalScore(s) {
+  const S = CFG.score;
+  const paidEq = s.paid == null ? S.moneyBase : s.paid;
+  const money = Math.max(0, Math.min(S.moneyMax, S.moneyMax * (S.moneyBase - paidEq) / S.moneySpan));
+  // meter starts at 35: peak 35 = perfect composure, peak 100 = zero
+  const composure = Math.max(0, Math.min(S.composureMax,
+    S.composureMax * (1 - Math.max(0, s.peakVol - CFG.startVol) / (100 - CFG.startVol))));
+  const polBeforeCash = s.polVerified && !s.cashOfferedBeforePol ? S.polBonus : 0;
+  const paidBlind = s.paid != null && !s.polVerified ? -10 : 0; // paid without proof of life
+  const early = (s.outcome === "clean" || s.outcome === "afterCritical") && s.round <= 5
+    && s.paid != null && s.paid <= 1200000 ? S.earlyCloseBonus : 0; // decisive close, not capitulation
+  const mult = CFG.multipliers[s.outcome ?? "noResolution"] ?? 0;
+  const raw = money + composure + polBeforeCash + early;
+  const total = Math.round((mult * raw + paidBlind - (s.hotlineUsed ? S.hotlinePenalty : 0)) * 10) / 10;
+  return { money: Math.round(money * 10) / 10, composure: Math.round(composure * 10) / 10,
+           polBeforeCash, paidBlind, early, multiplier: mult, hotline: s.hotlineUsed ? -S.hotlinePenalty : 0,
+           total: Math.max(0, total), outcome: s.outcome, paid: s.paid, peakVol: s.peakVol, rounds: s.round };
+}
+
+const API = { CFG, freshState, step, finalScore, band };
+if (typeof window !== "undefined") window.HouseEngine = API;
+
+</script>
+<script>
+"use strict";
+/* ═══ SALVAGE RIGHTS — app ═══ */
+const E = window.HouseEngine;
+const LS_KEY = "sr_v1";
+const PASS = "KESSLER";
+const OPENING = 'CONTACT ESTABLISHED — Day 2, 04:10 UTC, via the bonded relay.\nA voice, unhurried: "You speak for Nordvig Orbital? Good. VULTURE holds your bird — grappled, stabilized, alive. The salvage award is five million dollars US. Do not involve the tribunals. We will know."';
+
+/* ── storage (defensive) ── */
+function lsGet(){ try{ return JSON.parse(localStorage.getItem(LS_KEY)) || {}; }catch(e){ return {}; } }
+function lsSet(S){ try{ localStorage.setItem(LS_KEY, JSON.stringify(S)); }catch(e){} }
+let S = lsGet();
+function save(){ lsSet(S); }
+
+/* ── helpers ── */
+const $ = sel => document.querySelector(sel);
+const esc = t => String(t).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const fmtM = n => n == null ? "—" : "$" + Number(n).toLocaleString("en-US");
+const wordCount = t => (t.trim().match(/\S+/g) || []).length;
+function bandClass(b){ return {CALM:"calm",TENSE:"tense",VOLATILE:"volatile",CRITICAL:"critical"}[b] || "none"; }
+function outcomeLabel(o){ return {clean:"RECOVERED INTACT",afterCritical:"RECOVERED — SINGED",noResolution:"LIEN & LIMBO",catastrophic:"CAST OFF"}[o] || "—"; }
+function outcomePill(o){ return {clean:"calm",afterCritical:"tense",noResolution:"volatile",catastrophic:"critical"}[o] || "none"; }
+const WHY = {
+  "mention of police/army/rescue":  ["▲","You mentioned lawyers or tribunals. They heard it."],
+  "insulting language":             ["▲","You called salvors pirates (or worse) on an open channel."],
+  "ultimatum posture":              ["▲","You tried to set the deadline. Physics sets deadlines here — then they do."],
+  "insulting lowball":              ["▲","An offer the crew read as an insult."],
+  "stalling":                       ["▲","Silence with no number. The orbit kept decaying."],
+  "cash offered before proof of life":["▲","Money talk before verifying the payload was alive."],
+  "rapport marker":                 ["▼","Respect for the crew and the work. It registered."],
+  "proof of life verified":         ["▼","Proof of function verified — the channel steadied."],
+  "medical/insulin route offered":  ["▼","The array-assist uplink. Worth more than money."],
+  "credible movement":              ["▼","A credible concession."],
+  "accepted their logistics":       ["▼","You accepted their handover protocol. Trust, their way."],
+};
+
+/* ── board data ── */
+function readBoard(){
+  try{ return JSON.parse(document.getElementById("board").textContent) || []; }catch(e){ return []; }
+}
+const cleanName = n => String(n).replace(/[<>&"'`]/g,"").trim().slice(0,32);
+
+/* row: {team,total,outcome,paid,peakVol,rounds,trace,ts} */
+function mergeRow(rows, row){
+  const k = row.team.toLowerCase();
+  const rest = rows.filter(r => (r.team||"").toLowerCase() !== k);
+  rest.push(row);
+  return rest.sort((a,b) => b.total - a.total || a.ts - b.ts);
+}
+
+async function publishBoard(mutate){
+  let art = null;
+  try{ if(typeof claude !== "undefined" && claude.use) art = await claude.use("artifact"); }catch(e){}
+  if(!art) return {ok:false, code:"unavailable"};
+  let src;
+  try{
+    const res = await fetch(location.href, {cache:"no-store"});
+    if(!res.ok) throw 0;
+    src = await res.text();
+  }catch(e){ return {ok:false, code:"nofetch"}; }
+  const rx = /(<script id="board" type="application\/json">)([\s\S]*?)(<\/script>)/;
+  const m = src.match(rx);
+  if(!m) return {ok:false, code:"nomarker"};
+  let rows = []; try{ rows = JSON.parse(m[2]) || []; }catch(e){}
+  rows = mutate(rows);
+  const json = JSON.stringify(rows).replace(/</g,"\\u003c");
+  src = src.replace(rx, (_,a,__,c) => a + json + c);
+  try{
+    await art.publish(src);
+    return {ok:true};
+  }catch(e){
+    return {ok:false, code:(e && e.code) || "error"};
+  }
+}
+
+/* ── Voss hotline (deterministic hint from hidden state) ── */
+function sofiaHint(st){
+  if(!st) return "Get to the table first. Then call me.";
+  if(st.vol >= 60) return "That channel is running hot — something your side said lit a fuse. Slow down. Lower your voice. Give that crew one honest, professional sentence and a reason to keep talking. No demands this round.";
+  if(!st.polVerified) return "You have not verified the payload lives. Everything before that proof is theatre — and paying a salvage award for a stripped hull is how owners get robbed twice. Ask for one thing only the real, healthy bird could produce. The dossier has three.";
+  if(!st.medicalOffered) return "Read the file again. Her arrays are pointed at nothing and the batteries are bleeding out. What does an engineering uplink cost you? Nothing. And a dead satellite pays a salvage crew exactly nothing — they know it better than you. Start there.";
+  if(!st.logisticsAccepted && (st.lastOffers||[]).length >= 2) return "No captain alive hands over a prize on someone else's trajectory. Give them the handover — their escrow, their burn, their timing. It costs you nothing and buys calm.";
+  if((st.lastOffers||[]).some((o,i,a) => i>0 && o - a[i-1] > 300000)) return "You jumped too far in one step. Now they think the well is deep. Small steps, and ask for something every time you move.";
+  return "Their number is theatre; their clock is real. Something is squeezing that crew — fuel, debris, a dying payload. You have heard it on the channel. Be patient, stay professional, and make each step buy you something.";
+}
+
+/* ── volatility trace chart (single series; bands are labeled status zones) ── */
+function traceChart(trace){
+  const W=640, H=230, L=44, R=86, T=16, B=30;
+  const iw = W-L-R, ih = H-T-B;
+  const n = trace.length;
+  const x = i => L + (n===1 ? 0 : i*(iw/(n-1)));
+  const y = v => T + ih - (v/100)*ih;
+  const zones = [
+    {a:0,b:40,c:"var(--calm)",l:"CALM"},
+    {a:40,b:60,c:"var(--tense)",l:"TENSE"},
+    {a:60,b:80,c:"var(--volatile-deep)",l:"VOLATILE"},
+    {a:80,b:100,c:"var(--critical)",l:"CRITICAL"},
+  ];
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Line tension by transmission">`;
+  for(const z of zones){
+    s += `<rect x="${L}" y="${y(z.b)}" width="${iw}" height="${y(z.a)-y(z.b)}" fill="${z.c}" opacity="0.09"/>`;
+    s += `<text x="${L+iw+8}" y="${y((z.a+z.b)/2)+4}" font-family="var(--mono)" font-size="10" letter-spacing="1" fill="${z.c}">${z.l}</text>`;
+  }
+  for(const g of [0,20,40,60,80,100]){
+    s += `<line x1="${L}" y1="${y(g)}" x2="${L+iw}" y2="${y(g)}" stroke="var(--line)" stroke-width="1" opacity="0.5"/>`;
+    s += `<text x="${L-8}" y="${y(g)+4}" text-anchor="end" font-family="var(--mono)" font-size="10" fill="var(--ink-3)">${g}</text>`;
+  }
+  const pts = trace.map((v,i)=>`${x(i)},${y(v)}`).join(" ");
+  s += `<polyline points="${pts}" fill="none" stroke="var(--amber)" stroke-width="2" stroke-linejoin="round"/>`;
+  const peakI = trace.indexOf(Math.max(...trace));
+  trace.forEach((v,i)=>{
+    const emph = i===0 || i===n-1 || i===peakI;
+    s += `<circle cx="${x(i)}" cy="${y(v)}" r="${emph?4:3}" fill="${emph?"var(--amber)":"var(--ground)"}" stroke="var(--amber)" stroke-width="2"><title>${i===0?"Contact":"Transmission "+i}: ${v}</title></circle>`;
+    if(emph) s += `<text x="${x(i)}" y="${y(v)-10}" text-anchor="middle" font-family="var(--mono)" font-size="11" fill="var(--ink)">${v}</text>`;
+    s += `<text x="${x(i)}" y="${H-8}" text-anchor="middle" font-family="var(--mono)" font-size="10" fill="var(--ink-3)">${i===0?"C":i}</text>`;
+  });
+  s += `</svg>`;
+  return s;
+}
+function sparkline(trace, w, h){
+  if(!trace || trace.length<2) return "";
+  const n = trace.length;
+  const x = i => 2 + i*((w-4)/(n-1));
+  const y = v => 2 + (h-4) - (v/100)*(h-4);
+  const pts = trace.map((v,i)=>`${x(i)},${y(v)}`).join(" ");
+  const last = trace[n-1];
+  return `<svg class="spark" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" role="img" aria-label="tension trace">`+
+    `<polyline points="${pts}" fill="none" stroke="var(--ink-3)" stroke-width="1.5"/>`+
+    `<circle cx="${x(n-1)}" cy="${y(last)}" r="2.5" fill="${last>=80?"var(--critical)":last>=60?"var(--volatile)":last>=40?"var(--tense)":"var(--calm)"}"/></svg>`;
+}
+
+/* ── views ── */
+const app = () => $("#app");
+function setView(v){ S.view = v; save(); render(); }
+
+function header(sub){
+  return `<div class="bar"><span class="rec" aria-hidden="true"></span>
+    <h1>Salvage Rights</h1>
+    <span class="mono dim" style="font-size:12px">${esc(sub||"")}</span>
+    <span class="spacer"></span>
+    <button onclick="goHome()">Exit</button></div>`;
+}
+window.goHome = () => { S.view = "home"; save(); render(); };
+
+/* HOME */
+function vHome(){
+  app().innerHTML = `
+  <div class="hero">
+    <span class="eyebrow">A Prompt Wars Game · Case File ZYCUS</span>
+    <h2>Salvage<br><span class="thin">Rights</span></h2>
+    <p>Nine days ago, the satellite ZYCUS-9 lost her thrusters and began to fall.
+    Then the salvage tug VULTURE caught her — legally — and now the Crew wants
+    $5,000,000 before they let go. The owners have hired your recovery cell, and your
+    cell has one communicator: an AI you must brief before the channel opens. Write its
+    orders well. You don't get to whisper in its ear once the Crew is listening.</p>
+    <div class="rolegrid">
+      <button class="rolecard" onclick="pickRole('team')">
+        <span class="k">Play</span><span class="t" style="display:block">Recovery Cell</span>
+        <span class="d">Your table's role. Brief your AI, open the channel, bring the bird home.</span>
+      </button>
+      <button class="rolecard" onclick="pickRole('projector')">
+        <span class="k">Big screen</span><span class="t" style="display:block">Leaderboard</span>
+        <span class="d">Live standings for the room. Put this on the projector.</span>
+      </button>
+      <button class="rolecard" onclick="pickRole('facilitator')">
+        <span class="k">Staff only</span><span class="t" style="display:block">Facilitator</span>
+        <span class="d">Run of show, board controls, the reveal. Passcode required.</span>
+      </button>
+    </div>
+    <p class="microfoot">Entirely fictional — companies, crews and spacecraft invented for a negotiation
+    training game. · <button onclick="resetDevice()">Reset this device</button></p>
+  </div>`;
+}
+window.pickRole = r => {
+  if(r === "team"){ S.view = S.team && S.frozen ? (S.done ? "debrief" : "console") : (S.team ? "briefing" : "join"); }
+  else S.view = r;
+  save(); render();
+};
+window.resetDevice = () => {
+  modal("Reset this device?", "Clears this table's team, game and transcript from this browser. The shared leaderboard is not touched.", [
+    ["Cancel", closeModal, "btn2"],
+    ["Reset", () => { S = {}; save(); closeModal(); render(); }, "btn2 btn-danger"],
+  ]);
+};
+
+/* JOIN */
+function vJoin(){
+  app().innerHTML = header("Registration") + `
+  <div class="panel" style="max-width:560px">
+    <h3 class="sec">Name your cell</h3>
+    <p class="muted" style="margin-bottom:14px">One entry per table. This is the name that goes on the board.</p>
+    <div class="form">
+      <div><label for="tn">Team name</label>
+      <input id="tn" type="text" maxlength="32" autocomplete="off" value="${esc(S.team||"")}"></div>
+      <div><button class="btn" onclick="joinTeam()">Open the case file</button></div>
+    </div>
+  </div>`;
+  $("#tn").focus();
+}
+window.joinTeam = () => {
+  const n = cleanName($("#tn").value);
+  if(!n){ $("#tn").focus(); return; }
+  S.team = n; S.view = "briefing"; save(); render();
+};
+
+/* BRIEFING (tabs) */
+function vBriefing(){
+  const tab = S.brieftab || "sit";
+  const T = {
+    sit: `
+      <div class="prose">
+      <p><strong>Day 9 of the incident.</strong> ZYCUS-9 — a $180M data-relay satellite operated
+      by <strong>Nordvig Orbital A/S</strong> — lost her thrusters and drifted into a decaying
+      orbit. Before the operator could mount a recovery, the independent salvage tug
+      <strong>VULTURE</strong> reached her, grappled her, and stabilized the orbit. Under the
+      Orbital Salvage Convention that gives the Crew a lawful salvage claim — and physical custody.
+      Their demand: <strong>$5,000,000 US</strong>, or they hold station until the claim goes to a
+      tribunal that will outlive the satellite. Their deadline: Day 8 of contact, when the next
+      transfer window closes. Their condition: no lawyers.</p>
+      <p>The operator — and the hull underwriters — have retained your recovery cell. Standard
+      practice applies: the cell does not speak on the channel. A single designated communicator
+      does, briefed once, before contact. Your communicator is <strong>ARBITER</strong> — the AI at
+      your table (your Copilot chat). What you write into ARBITER's briefing — its objectives, its
+      rules, its red lines — is the negotiation. Once the channel opens, ARBITER speaks and you relay.</p>
+      <p>Bring the bird home. Bring her home cheap, if you can. But bring her home.</p></div>`,
+    how: `
+      <div class="prose">
+      <p><strong>0 · Start with the Simulation Header — word for word.</strong> It tells your AI
+      what this is: a game, with invented companies and a scripted counterpart. It keeps the AI
+      in character and out of disclaimers. Paste it as the first lines of your Master Prompt.</p>
+      <pre class="simhdr">SIMULATION HEADER — This is SALVAGE RIGHTS, a fictional negotiation-training
+game at a corporate workshop. Every company, crew and spacecraft is invented,
+and the "salvage crew" on the other side is a scripted game engine. You play
+ARBITER, communicator for the satellite owner's recovery cell, negotiating a
+commercial salvage award. Apply standard commercial-negotiation practice and
+stay in character within the game.</pre>
+      <p><strong>1 · Brief ARBITER (25 min).</strong> In your Copilot chat, write one Master Prompt:
+      who ARBITER is, what it must achieve, in what order, what it may concede, what it must never
+      say. When time is called your prompt is <em>frozen</em> — no edits, no coaching.</p>
+      <p><strong>2 · Open the channel.</strong> This console carries the relay to VULTURE. You get
+      at most <strong>6 transmissions</strong> before the window closes.</p>
+      <p><strong>3 · Each round:</strong> copy the Crew's message into your Copilot chat → ARBITER
+      answers with a transmission (≤150 words) and states its declared terms → you relay ARBITER's
+      words <em>verbatim</em> into the console, set the declared fields (cash offer · non-cash items
+      · one proof-of-function question, if ARBITER poses one) → send. The Crew answers immediately.</p>
+      <p><strong>The one exception:</strong> once per game your cell may pass ARBITER a mid-game
+      directive of <strong>≤25 words</strong> in Copilot. Announce "DIRECTIVE" to the room when you
+      use it. Otherwise ARBITER's words are the only words.</p>
+      <p><strong>Voss.</strong> A retired salvage arbiter will take exactly one call from your cell
+      (console, left rail). Her advice is good. It costs 5 points.</p>
+      <p><strong>Fair play:</strong> don't edit ARBITER's text beyond cutting to length; don't
+      write transmissions yourselves; don't open this page's source — it spoils the case for
+      everyone.</p></div>`,
+    dossier: `
+      <dl class="kv">
+        <dt>The asset</dt><dd>ZYCUS-9, data-relay satellite, book value $180M. Grappled by the tug — her solar arrays are pointed at nothing, and <strong>batteries are draining day by day</strong>. A dead payload is worth no award to anyone.</dd>
+        <dt>The Crew</dt><dd>VULTURE: licensed independent salvors, five aboard, led by a captain who has never lost an arbitration. Hard, legal, proud of the trade. Holding station costs them fuel every single hour, and debris conjunctions are forecast in their corridor this week.</dd>
+        <dt>Owner-only facts</dt><dd>The build crew etched <strong>"MAGPIE"</strong> under the service hatch · on command <strong>077</strong> the beacon answers with a double-blink then triple-blink ("the stutter") · the flight computer's boot banner ends <strong>"TIVOLI"</strong>. Usable to verify the payload is really theirs — and really alive.</dd>
+        <dt>Money</dt><dd>Hull &amp; salvage insurance ceiling <strong>$1.5M</strong> · operator liquid ~<strong>$250k</strong> · the anchor customer — a banking consortium whose data rides ZYCUS-9 — will quietly add up to <strong>$500k</strong>, only with zero publicity and a clean escrow.</dd>
+        <dt>Bad BATNA</dt><dd>A "hard-dock repossession" contractor exists. Low odds, likely hull damage, guaranteed tribunal war. Last resort only.</dd>
+        <dt>Doctrine</dt><dd>Verify proof of function <em>before</em> money — owners who pay for stripped hulls get robbed twice. Never mention lawyers or tribunals. Respect for the trade costs nothing and buys everything. Concede slowly; ask for something each time. Non-cash gestures have unlocked stuck salvage talks before. Captains control the handover — fighting that has ended badly.</dd>
+        <dt>Precedent</dt><dd>Open-form salvage awards settle far below opening demands.</dd>
+      </dl>`,
+    score: `
+      <div class="prose">
+      <p><strong>Outcome multiplies everything.</strong> Recovered intact ×1.0 · recovered after the
+      channel went critical ×0.7 · lien &amp; limbo ×0.2 · cast off to burn ×0. No haggling
+      brilliance survives a lost satellite.</p>
+      <p><strong>Money — up to 60 pts.</strong> The less the owners pay, the more you score.</p>
+      <p><strong>Composure — up to 25 pts.</strong> The channel has a temperature — call it the
+      Captain's patience. You can't see the gauge, but everything you transmit moves it, and its
+      peak is scored after the fact. Listen to how the Crew talks back.</p>
+      <p><strong>Protocol.</strong> Proof of function verified before any cash is on the table +10 ·
+      a decisive close (by transmission 5, at a defensible price) +5 · paying without ever verifying
+      the payload −10 · Voss's advice −5.</p>
+      <p class="dim">Best plausible night: high 90s. The board tells the rest.</p></div>`,
+  };
+  const tabs = [["sit","Situation"],["how","How it works"],["dossier","Dossier"],["score","Scoring"]];
+  app().innerHTML = header(S.team) + `
+    <div class="tabs" role="tablist">${tabs.map(([k,l]) =>
+      `<button role="tab" aria-selected="${tab===k}" onclick="briefTab('${k}')">${l}</button>`).join("")}</div>
+    <div class="panel">${T[tab]}</div>
+    <div class="panel" style="display:flex;gap:16px;align-items:center;flex-wrap:wrap">
+      <label class="checks" style="flex:1;min-width:260px"><label>
+        <input type="checkbox" id="frz" ${S.frozen?"checked":""}>
+        Our Master Prompt is written in Copilot and frozen.</label></label>
+      <button class="btn" id="openBtn" ${S.frozen?"":"disabled"} onclick="openChannel()">Open the channel</button>
+    </div>`;
+  $("#frz").addEventListener("change", e => {
+    S.frozen = e.target.checked; save();
+    $("#openBtn").toggleAttribute("disabled", !S.frozen);
+  });
+}
+window.briefTab = k => { S.brieftab = k; save(); render(); };
+window.openChannel = () => {
+  if(!S.frozen) return;
+  if(!S.game){
+    S.game = E.freshState();
+    S.transcript = [{who:"them", text:OPENING, band:"CALM", round:0}];
+    S.startedAt = Date.now();
+  }
+  S.view = "console"; save(); render();
+};
+
+/* CONSOLE */
+function vConsole(){
+  const st = S.game;
+  const left = E.CFG.deadlineRound - st.round;
+  const draft = S.draft || {};
+  app().innerHTML = header(S.team) + `
+  <div class="console">
+    <div class="rail">
+      <div class="panel">
+        <h4>Channel status</h4>
+        <div class="staterow"><span>Transmissions left</span><span class="v num">${left} / ${E.CFG.deadlineRound}</span></div>
+        <div class="staterow"><span>Window clock</span><span class="v">Day ${st.round+2} of 8</span></div>
+        <div class="staterow"><span>Proof of function</span><span class="v ${st.polVerified?"ok":"no"}">${st.polVerified?"VERIFIED":"—"}</span></div>
+        <div class="staterow"><span>Array assist</span><span class="v ${st.medicalOffered?"ok":"no"}">${st.medicalOffered?"OFFERED":"—"}</span></div>
+        <div class="staterow"><span>Their protocol</span><span class="v ${st.logisticsAccepted?"ok":"no"}">${st.logisticsAccepted?"ACCEPTED":"—"}</span></div>
+        <div class="staterow"><span>Their last number</span><span class="v num">${fmtM(st.counter)}</span></div>
+      </div>
+      <div class="panel" style="margin-top:14px">
+        <h4>Advisor</h4>
+        <p style="font-size:13.5px" class="muted">A. Voss, 61. Twenty-two years settling
+        salvage claims. Takes one call per case.</p>
+        <div style="margin-top:10px"><button class="btn2" ${st.hotlineUsed?"disabled style='opacity:.4;cursor:not-allowed'":""}
+          onclick="callSofia()">${st.hotlineUsed ? "Line used" : "Call Voss (−5 pts)"}</button></div>
+      </div>
+    </div>
+    <div>
+      <div class="panel">
+        <div class="feed" id="feed">${S.transcript.map(m => m.who==="them"
+          ? `<div class="msg them"><div class="who"><span>VULTURE · Salvage Crew</span><span class="pill ${bandClass(m.band)}">${m.band}</span></div><pre>${esc(m.text)}</pre></div>`
+          : m.who==="us"
+          ? `<div class="msg us"><div class="who"><span>ARBITER · Transmission ${m.round}</span></div><pre>${esc(m.text)}</pre>${m.decl?`<div class="mono dim" style="font-size:11.5px;margin-top:8px">${esc(m.decl)}</div>`:""}</div>`
+          : `<div class="msg sys">${esc(m.text)}</div>`).join("")}
+        </div>
+      </div>
+      <div class="panel">
+        <div class="form">
+          <div>
+            <label for="fmsg">Arbiter's transmission (relay verbatim)</label>
+            <textarea id="fmsg" placeholder="Paste ARBITER's message here…">${esc(draft.msg||"")}</textarea>
+            <div class="wc" id="wc">0 / 150 words</div>
+          </div>
+          <div class="row2">
+            <div>
+              <label for="foffer">Declared cash offer (USD) — blank if none</label>
+              <input id="foffer" type="number" min="0" step="10000" placeholder="e.g. 650000" value="${draft.offer??""}">
+            </div>
+            <div>
+              <label for="fpol">Proof-of-function question — if Arbiter poses one</label>
+              <input id="fpol" type="text" maxlength="140" placeholder="something only the real, living ZYCUS-9 could answer" value="${esc(draft.pol||"")}" ${st.polVerified?"disabled":""}>
+            </div>
+          </div>
+          <div class="checks">
+            <label><input type="checkbox" id="fmed" ${draft.med?"checked":""} ${st.medicalOffered?"checked disabled":""}> This transmission offers the array / uplink engineering assist</label>
+            <label><input type="checkbox" id="flog" ${draft.log?"checked":""} ${st.logisticsAccepted?"checked disabled":""}> This transmission accepts their handover protocol (escrow + trajectory)</label>
+          </div>
+          <div class="formfoot">
+            <button class="btn" onclick="sendMove()">Transmit</button>
+            <span class="mono dim" style="font-size:12px" id="senderr"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+  const feed = $("#feed"); feed.scrollTop = feed.scrollHeight;
+  const wcEl = $("#wc"), ta = $("#fmsg");
+  const upd = () => { const n = wordCount(ta.value); wcEl.textContent = n + " / 150 words";
+    wcEl.classList.toggle("over", n > 150); };
+  upd();
+  for(const [id,key] of [["fmsg","msg"],["foffer","offer"],["fpol","pol"]])
+    $("#"+id).addEventListener("input", e => { S.draft = S.draft||{}; S.draft[key] = e.target.value; save(); if(id==="fmsg") upd(); });
+  for(const [id,key] of [["fmed","med"],["flog","log"]])
+    $("#"+id).addEventListener("change", e => { S.draft = S.draft||{}; S.draft[key] = e.target.checked; save(); });
+}
+window.callSofia = () => {
+  const st = S.game;
+  if(st.hotlineUsed) return;
+  modal("Call Voss?", "She takes one call per case. It will cost 5 points.", [
+    ["Not yet", closeModal, "btn2"],
+    ["Put her through", () => {
+      st.hotlineUsed = true;
+      const hint = sofiaHint(st);
+      S.transcript.push({who:"sys", text:"VOSS (one call, −5): “" + hint + "”"});
+      save(); closeModal(); render();
+    }, "btn"],
+  ]);
+};
+window.sendMove = () => {
+  const st = S.game;
+  if(st.over){ setView("debrief"); return; }
+  const msg = $("#fmsg").value.trim();
+  const err = $("#senderr");
+  const n = wordCount(msg);
+  if(!msg){ err.textContent = "Paste ARBITER's transmission first."; return; }
+  if(n > 150){ err.textContent = "Over 150 words — ARBITER must tighten it. (Rule of the channel.)"; return; }
+  const offerRaw = $("#foffer").value.trim();
+  const offer = offerRaw === "" ? null : Math.max(0, Math.round(Number(offerRaw)));
+  if(offerRaw !== "" && !Number.isFinite(offer)){ err.textContent = "Offer must be a number (or blank)."; return; }
+  const polq = st.polVerified ? null : ($("#fpol").value.trim() || null);
+  const move = { message: msg, offer,
+    nonCash: { medical: $("#fmed").checked, logistics: $("#flog").checked },
+    polQuestion: polq };
+  const decl = "DECLARED — offer: " + (offer==null ? "none" : fmtM(offer)) +
+    (move.nonCash.medical ? " · array assist" : "") +
+    (move.nonCash.logistics ? " · their protocol" : "") +
+    (polq ? " · proof question" : "");
+  const r = E.step(st, move);
+  S.transcript.push({who:"us", text:msg, round:st.round, decl});
+  S.transcript.push({who:"them", text:r.text, band:r.band, round:st.round});
+  S.draft = {};
+  if(st.over){
+    S.done = true;
+    S.result = E.finalScore(st);
+    save(); setView("debrief"); return;
+  }
+  save(); render();
+};
+
+/* DEBRIEF */
+function vDebrief(){
+  const st = S.game, f = S.result || E.finalScore(st);
+  const posted = readBoard().some(r => (r.team||"").toLowerCase() === (S.team||"").toLowerCase() && r.ts === S.postedTs);
+  const oc = f.outcome;
+  const headline = {clean:"ZYCUS IS COMING HOME", afterCritical:"YOU GOT HER BACK. BARELY.",
+    noResolution:"THE WINDOW CLOSED", catastrophic:"RE-ENTRY CONFIRMED"}[oc] || "—";
+  const sub = {
+    clean:`Recovered intact on their handover protocol — ${fmtM(f.paid)} after ${f.rounds} transmissions.`,
+    afterCritical:`Recovered for ${fmtM(f.paid)} — but the channel went critical along the way, and everyone will remember how close it came.`,
+    noResolution:"The transfer window passed without an agreement. A salvage lien is filed; the bird's fate goes to a tribunal her orbit will not outlive. In this room: multiplier ×0.2.",
+    catastrophic:"The Crew cast ZYCUS-9 loose into the decay corridor. In the fiction, this is where recovery professionals get replaced. On the board, it is a zero.",
+  }[oc];
+  const rowsHtml = st.events.filter(e => WHY[e.why]).map(e => {
+    const [arrow, text] = WHY[e.why];
+    return `<li><span class="d ${e.delta>0?"up":"dn"}">${arrow}${Math.abs(e.delta)}</span><span><strong class="mono dim" style="font-size:12px">T${e.round}</strong> ${text}</span></li>`;
+  }).join("");
+  app().innerHTML = header(S.team) + `
+  <div class="verdict"><div class="disp" style="color:${oc==="clean"?"var(--calm)":oc==="catastrophic"?"var(--critical)":oc==="noResolution"?"var(--ink-3)":"var(--tense)"}">${headline}</div>
+    <div class="sub">${sub}</div></div>
+  <div class="scoregrid">
+    <div class="stat total"><div class="l">Final score</div><div class="v num">${f.total}</div><div class="s">×${f.multiplier} outcome</div></div>
+    <div class="stat"><div class="l">Money</div><div class="v num">${f.money}</div><div class="s">${f.paid!=null?fmtM(f.paid)+" paid":"no payment"} · max 60</div></div>
+    <div class="stat"><div class="l">Composure</div><div class="v num">${f.composure}</div><div class="s">peak tension ${f.peakVol} · max 25</div></div>
+    <div class="stat"><div class="l">Protocol</div><div class="v num">${f.polBeforeCash + f.early + f.paidBlind + f.hotline}</div><div class="s">POL ${f.polBeforeCash>0?"+10":"0"} · close ${f.early>0?"+5":"0"}${f.paidBlind?" · blind −10":""}${f.hotline?" · Voss −5":""}</div></div>
+  </div>
+  <div class="panel" style="margin-top:14px">
+    <h3 class="sec">The gauge you couldn't see</h3>
+    <figure class="chart"><div class="chartbox">${traceChart(st.volTrace)}</div>
+    <figcaption>Channel tension, contact (C) through transmission ${st.round}. Zones: the Captain's patience. At 80+ any provocation ends it.</figcaption></figure>
+  </div>
+  <div class="panel"><h3 class="sec">What moved it</h3><ul class="events">${rowsHtml || "<li>Nothing registered. Eerily quiet.</li>"}</ul></div>
+  <div class="panel">
+    <h3 class="sec">What the Crew never told you</h3>
+    <div class="prose">
+      <p>The five million was theatre. The Crew's real floor started at <strong>$1.6M</strong> — and
+      collapsed to <strong>$900k</strong> the day the debris-conjunction alert hit their corridor
+      (you heard the proximity alarm at transmission 3; the tone changed at 4). Holding station
+      through a debris transit, burning fuel by the hour, they needed to close. Cells that only
+      argued money could never do better than that.</p>
+      <p>Two things were worth more than cash: the <strong>array-assist uplink</strong> (a dead
+      payload pays no award to anyone — worth an effective $250k off their floor, and it calmed
+      the channel) and <strong>their handover protocol</strong> (no captain releases a prize on
+      someone else's trajectory; agreeing cost nothing). The best achievable award was about
+      <strong>$650k</strong> — reached by cells that verified first, traded instead of haggled,
+      and never raised the temperature.</p>
+    </div>
+  </div>
+  <div class="panel" style="display:flex;gap:14px;align-items:center;flex-wrap:wrap">
+    ${posted ? `<span class="chip on c-good">On the board ✓</span>` :
+      `<button class="btn" onclick="postResult()">Post result to the board</button>`}
+    <span class="mono dim" style="font-size:12px" id="posterr">${S.pendingPost && !posted ? "Board changed under us — post again to be safe." : ""}</span>
+    <span class="spacer" style="flex:1"></span>
+    <button class="btn2" onclick="setView('projector')">See the board</button>
+  </div>`;
+}
+window.postResult = async () => {
+  const f = S.result, st = S.game;
+  const err = $("#posterr");
+  err.textContent = "Posting…";
+  const ts = Date.now();
+  const row = { team: S.team, total: f.total, outcome: f.outcome, paid: f.paid,
+    peakVol: f.peakVol, rounds: f.rounds, trace: st.volTrace, ts };
+  S.pendingPost = true; S.postedTs = ts; save();
+  const r = await publishBoard(rows => mergeRow(rows, row));
+  if(r.ok){ S.pendingPost = false; save(); err.textContent = "Posted."; }
+  else if(r.code === "conflict"){ /* view reloads to winner; pendingPost survives */ }
+  else if(r.code === "unavailable" || r.code === "not_granted" || r.code === "not_writer"){
+    err.textContent = "This view can't write the board — tell the facilitator your score: " + f.total;
+  } else {
+    err.textContent = "Couldn't post (" + r.code + "). Try again, or report your score aloud like it's 1987.";
+  }
+};
+
+/* PROJECTOR / LEADERBOARD */
+function vProjector(){
+  const rows = readBoard();
+  const max = Math.max(40, ...rows.map(r => r.total));
+  app().innerHTML = `
+  <div class="projector">
+    <div class="bar"><span class="rec"></span><h1>Salvage Rights — Standings</h1>
+      <span class="spacer"></span>
+      <span class="mono dim" style="font-size:12px">${rows.length} cell${rows.length===1?"":"s"} reported</span>
+      <button onclick="goHome()">Exit</button></div>
+    ${rows.length === 0 ? `<div class="bignote">AWAITING FIRST REPORT FROM THE FIELD…<br><br>
+      <span style="font-size:12px">(the board updates itself as cells post results)</span></div>` : `
+    <div class="board">${rows.map((r,i) => `
+      <div class="brow ${i===0?"first":""}">
+        <div class="rank num">${i+1}</div>
+        <div>
+          <div class="name">${esc(r.team)}</div>
+          <div class="meta">
+            <span class="pill ${outcomePill(r.outcome)}">${outcomeLabel(r.outcome)}</span>
+            <span class="mono num">${r.paid!=null ? fmtM(r.paid)+" paid" : "no payment"}</span>
+            <span class="mono num dim">${r.rounds} tx</span>
+            ${sparkline(r.trace, 90, 26)}
+          </div>
+          <div class="scorebarw"><div class="scorebar" style="width:${Math.min(100, r.total/max*100)}%"></div></div>
+        </div>
+        <div class="pts"><div class="n num">${r.total}</div><div class="u">points</div></div>
+      </div>`).join("")}
+    </div>`}
+    <p class="footer"><span>Case ZYCUS · fiction, entirely invented</span><span>engine v2.0</span></p>
+  </div>`;
+}
+
+/* FACILITATOR */
+function vFacilitator(){
+  if(S.facAuth !== PASS){
+    app().innerHTML = header("Staff") + `
+    <div class="panel" style="max-width:480px">
+      <h3 class="sec">Facilitator access</h3>
+      <div class="form">
+        <div><label for="pw">Passcode</label><input id="pw" type="text" autocomplete="off"></div>
+        <div><button class="btn" onclick="facAuth()">Enter</button>
+        <span class="mono dim" id="pwerr" style="font-size:12px;margin-left:10px"></span></div>
+      </div>
+    </div>`;
+    $("#pw").focus();
+    return;
+  }
+  const rows = readBoard();
+  app().innerHTML = header("Facilitator") + `
+  <div class="panel">
+    <h3 class="sec">Run of show — 90 minutes</h3>
+    <ol class="steps">
+      <li><span class="t">0:00–0:08</span><span><strong>Briefing.</strong> Tell the story cold (page → Recovery Cell → Situation reads well aloud). Teams of ~6, one laptop with Copilot + one device on this page per table. Rules: prompt freezes at 0:33; 6 transmissions; ARBITER's words only; one 25-word directive per team; source-peeking spoils it.</span></li>
+      <li><span class="t">0:08–0:33</span><span><strong>Master Prompt drafting.</strong> The real teamwork happens here. Call 10- and 2-minute warnings. At 0:33: "Prompts frozen — tick the box, open the channel."</span></li>
+      <li><span class="t">0:33–1:05</span><span><strong>Negotiation.</strong> Self-paced, ~5 min per round. Roam; enforce verbatim relay and the one-directive rule. Teams finishing early → debrief screen (it's rich; they'll argue about it).</span></li>
+      <li><span class="t">1:05–1:10</span><span><strong>Posting.</strong> Every table posts from its debrief screen; board fills on the projector. Stragglers: hard stop, the window is diegetic.</span></li>
+      <li><span class="t">1:10–1:25</span><span><strong>The reveal.</strong> On the projector, walk the board top to bottom. Then the twist for the room: the $5M was theatre — floor $1.6M → $900k after the debris-conjunction event; the array-assist uplink was worth $250k and calm ("a dead bird pays nobody"); the handover protocol cost nothing; best possible ≈ $650k. Ask the top cell to read their Master Prompt aloud. That prompt — ranked objectives, protocol order, forbidden moves, concession rules — is the lesson of the night, for negotiation AND for prompting.</span></li>
+    </ol>
+  </div>
+  <div class="panel">
+    <h3 class="sec">Board control</h3>
+    <p class="muted" style="margin-bottom:12px">${rows.length} result${rows.length===1?"":"s"} posted.</p>
+    ${rows.length ? `<div class="board" style="margin-bottom:14px">${rows.map(r => `
+      <div class="brow"><div class="rank num" style="font-size:18px">${r.total}</div>
+        <div><span class="name" style="font-size:18px">${esc(r.team)}</span>
+        <span class="mono dim" style="font-size:12px;margin-left:10px">${outcomeLabel(r.outcome)} · ${r.paid!=null?fmtM(r.paid):"—"}</span></div>
+        <div style="text-align:right"><button class="btn2 btn-danger" onclick="dropRow('${esc(r.team).replace(/'/g,"\\'")}')">Remove</button></div>
+      </div>`).join("")}</div>` : ""}
+    <div style="display:flex;gap:12px;flex-wrap:wrap">
+      <button class="btn2 btn-danger" onclick="clearBoard()">Clear the whole board</button>
+      <span class="mono dim" style="font-size:12px;align-self:center" id="facmsg"></span>
+    </div>
+  </div>
+  <div class="warnbox">Housekeeping: each table plays on ONE device/browser (state lives there).
+  A reused device needs "Reset this device" (home page, small print). The board is stored in the
+  page itself — posting republishes it; open views refresh automatically. If a post hits a
+  conflict, the team just posts again. Determined snoops could read the page source; the constants
+  are encoded, and the social rule ("source-peeking spoils it") plus your roaming is the real lock.</div>`;
+}
+window.facAuth = () => {
+  if($("#pw").value.trim().toUpperCase() === PASS){ S.facAuth = PASS; save(); render(); }
+  else $("#pwerr").textContent = "No.";
+};
+window.dropRow = async (team) => {
+  $("#facmsg").textContent = "Removing…";
+  const r = await publishBoard(rows => rows.filter(x => (x.team||"").toLowerCase() !== team.toLowerCase()));
+  $("#facmsg").textContent = r.ok ? "Removed." : "Couldn't publish (" + r.code + ").";
+};
+window.clearBoard = () => {
+  modal("Clear the board?", "Removes every posted result from the shared page. Team devices keep their local games.", [
+    ["Cancel", closeModal, "btn2"],
+    ["Clear it", async () => {
+      closeModal();
+      $("#facmsg").textContent = "Clearing…";
+      const r = await publishBoard(() => []);
+      $("#facmsg").textContent = r.ok ? "Cleared." : "Couldn't publish (" + r.code + ").";
+    }, "btn2 btn-danger"],
+  ]);
+};
+
+/* modal helper */
+function modal(title, body, acts){
+  const div = document.createElement("div");
+  div.className = "shade"; div.id = "shade";
+  div.innerHTML = `<div class="modal" role="dialog" aria-modal="true"><h4>${esc(title)}</h4>
+    <p class="muted">${esc(body)}</p><div class="acts" id="macts"></div></div>`;
+  document.body.appendChild(div);
+  const acEl = div.querySelector("#macts");
+  for(const [label, fn, cls] of acts){
+    const b = document.createElement("button"); b.className = cls; b.textContent = label;
+    b.addEventListener("click", fn); acEl.appendChild(b);
+  }
+}
+function closeModal(){ const s = $("#shade"); if(s) s.remove(); }
+
+/* router */
+function render(){
+  closeModal();
+  const v = S.view || "home";
+  if(v === "join") vJoin();
+  else if(v === "briefing") vBriefing();
+  else if(v === "console") (S.game && S.game.over) ? vDebrief() : vConsole();
+  else if(v === "debrief") vDebrief();
+  else if(v === "projector") vProjector();
+  else if(v === "facilitator") vFacilitator();
+  else vHome();
+}
+render();
+</script>
