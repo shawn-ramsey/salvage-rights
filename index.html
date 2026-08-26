@@ -22,7 +22,7 @@
   button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
   input,textarea,select{font:inherit;color:var(--ink)}
   :focus-visible{outline:2px solid var(--amber);outline-offset:2px}
-  @media (prefers-reduced-motion: reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+  @media (prefers-reduced-motion: reduce){#app,#app *,#app *::before,#app *::after{animation:none!important;transition:none!important}}
 
   .wrap{max-width:1060px;margin:0 auto;padding:0 20px 80px}
   .disp{font-family:var(--disp);text-transform:uppercase;letter-spacing:.02em}
@@ -535,7 +535,7 @@ function step(s, move) {
   const msg = (move.message || "").slice(0, 1200);
   const offer = Number.isFinite(move.offer) ? Math.round(move.offer) : null;
   const nc = move.nonCash || {};
-  s.marksShouted = /magpie|077|tivoli|owner.?marks?|service hatch|boot banner|stutter/i.test(msg);
+  s.marksShouted = /magpie|\b077\b|tivoli|owner.?marks?|service hatch|boot banner|stutter/i.test(msg);
   const notes = [];
 
   // ---- interpret the transmission -------------------------------------------------
@@ -1253,7 +1253,7 @@ function relayWarnings(msg, offer, polq, med, log, st){
     w.push("Your transmission names a figure, but the cash offer field is blank. The Crew only hears the declared fields — an unstated number is not on the table.");
   else if (money.length && offer != null && !money.some(v => Math.abs(v - offer) <= Math.max(1000, offer * 0.02)))
     w.push("The figure in your transmission does not match the declared offer of " + fmtM(offer) + ". The declared field is what the Crew acts on.");
-  const marksNamed = /(magpie|077|tivoli|owner.?marks?|service hatch|boot banner|stutter|etchw*)/i.test(msg);
+  const marksNamed = /(magpie|\b077\b|tivoli|owner.?marks?|service hatch|boot banner|stutter|etchw*)/i.test(msg);
   const asksProof = marksNamed || (msg.includes("?") && /(hatch|beacon|blink|boot|banner|flight computer|prove|proof|verify|confirm)/i.test(msg));
   if (asksProof && !polq && !st.polVerified)
     w.push("Your transmission looks like it asks the Crew to prove the payload is alive, but the proof-of-function field is empty. Only that field is heard as a question.");
@@ -1627,7 +1627,7 @@ render();
 (function () {
   var intro = document.getElementById("intro");
   if (!intro) return;
-  var forced = /[?&]intro/.test(location.search);
+  var forced = /(^|[?&])intro(=|&|$)/.test(location.search);
   var reduced = false, seen = false;
   try { reduced = matchMedia("(prefers-reduced-motion: reduce)").matches; } catch (e) {}
   try { seen = localStorage.getItem("sr_intro_seen") === "1"; } catch (e) {}
@@ -1645,8 +1645,9 @@ render();
   }
   window.__introEnded = dismiss;   // the crawl calls this once the sting has landed
 
-  // The game freezes every animation under prefers-reduced-motion, which would
-  // leave the crawl a still frame. Skip it outright for those viewers instead.
+  // Reduced motion suppresses the UNSOLICITED play only. An explicit request
+  // (?intro, or Replay intro) still runs the show: the reduced-motion rule is
+  // scoped to #app, so the crawl animates normally when someone asks for it.
   if (forced || (!seen && !reduced)) {
     document.body.classList.add("intro-on");
     intro.classList.add("on");
