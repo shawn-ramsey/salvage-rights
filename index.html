@@ -832,7 +832,7 @@ if (typeof window !== "undefined") window.HouseEngine = API;
 const E = window.HouseEngine;
 const LS_KEY = "sr_v1";
 const PASS = "KESSLER";
-const OPENING = 'CHANNEL OPEN — Day 2 of contact, 04:10 UTC.\nAn unhurried voice: "You speak for Nordvig Orbital? Good. VULTURE is holding your satellite. We have it, we have stopped it falling, and it is still working. Our price for releasing it is five million US dollars. Do not bring in lawyers or courts. We will know."';
+const OPENING = 'CHANNEL OPEN — Day 1, 04:10 UTC.\nAn unhurried voice: "You speak for Nordea Orbital? Good. VULTURE is holding your satellite. We have it, we have stopped it falling, and it is still working. Our price for releasing it is five million US dollars. Do not bring in lawyers or courts. We will know."';
 
 /* ── storage (defensive) ── */
 function lsGet(){ try{ return JSON.parse(localStorage.getItem(LS_KEY)) || {}; }catch(e){ return {}; } }
@@ -981,7 +981,7 @@ function vHome(){
   <div class="hero">
     <span class="eyebrow">A Prompt Wars Game · Case File ZYCUS</span>
     <h2>Salvage<br><span class="thin">Rights</span></h2>
-    <p>Nine days ago the satellite ZYCUS-9 lost its engines and began to fall.
+    <p>Two weeks ago the satellite ZYCUS-9 lost its engines and began to fall.
     The salvage ship VULTURE caught it — legally — and now its crew wants
     $5,000,000 before they let go. The owners have hired your team, and your team
     may send only one negotiator: an AI agent. You write its instructions before the
@@ -1001,8 +1001,9 @@ function vHome(){
         <span class="d">Timetable, board controls, the reveal. Passcode required.</span>
       </button>
     </div>
-    <p class="microfoot">Completely fictional — the companies, crews and spacecraft were invented for a
-    negotiation training game. · <button onclick="resetDevice()">Reset this device</button>
+    <p class="microfoot">A fictional scenario written for a negotiation training game. Nordea Orbital A/S,
+    its satellite and the salvage crew do not exist, and nothing here describes real events. ·
+    <button onclick="resetDevice()">Reset this device</button>
     · <button onclick="playIntro()">Play the intro again</button></p>
   </div>`;
 }
@@ -1061,15 +1062,16 @@ function vBriefing(){
   const T = {
     sit: `
       <div class="prose">
-      <p><strong>Day 9 of the incident.</strong> ZYCUS-9 — a data-relay satellite worth $180M,
-      operated by <strong>Nordvig Orbital A/S</strong> — lost its engines and began to fall towards
-      Earth. Before the owner could send help, the independent salvage ship <strong>VULTURE</strong>
-      reached it, caught it, and stopped the fall. Under space salvage law, that gives the crew a
-      legal claim to a reward — and it gives them physical possession of your satellite.</p>
+      <p><strong>Two weeks ago</strong>, ZYCUS-9 — a data-relay satellite worth $180M, operated by
+      <strong>Nordea Orbital A/S</strong> — lost its engines and began to fall towards Earth. Before
+      the owner could send help, the independent salvage ship <strong>VULTURE</strong> reached it,
+      caught it, and stopped the fall. Under space salvage law, that gives the crew a legal claim to
+      a reward — and it gives them physical possession of your satellite.</p>
       <p>Their price: <strong>$5,000,000 US</strong>. If you refuse, they will simply keep holding it
       until the case reaches a court — and the court will take longer to decide than the satellite
-      has left. Their deadline: day 8 of the talks, when the next transfer window closes. Their one
-      condition: no lawyers.</p>
+      has left. Their one condition: no lawyers.</p>
+      <p><strong>Today is day 1.</strong> You have six days, and you may send one message per day.
+      On day 6 the next transfer window closes and the chance to get the satellite back is gone.</p>
       <p>The owner and its insurers have hired your recovery team. The usual rule applies: your team
       does not speak on the channel. One negotiator speaks for you, and it gets its instructions
       once, in writing, before contact begins. Your negotiator is <strong>the AGENT</strong> — the AI
@@ -1081,23 +1083,24 @@ function vBriefing(){
     how: `
       <div class="prose">
       <p><strong>0 · Start with the Simulation Header — copy it word for word.</strong> It tells your
-      AI what this is: a game, with invented companies and a scripted opponent. It keeps the AI in
+      AI what this is: a game, with an invented scenario and a scripted opponent. It keeps the AI in
       character and stops it adding warnings and disclaimers. Paste it as the first lines of your
       instructions.</p>
       <pre class="simhdr">SIMULATION HEADER — This is SALVAGE RIGHTS, a fictional negotiation-training
-game at a company workshop. Every company, crew and spacecraft is invented, and
-the "salvage crew" on the other side is a scripted game engine. You are the
-AGENT: the negotiator for the satellite owner's recovery team, agreeing a price
-to get the satellite back. The crew's messages will be pasted into this chat.
-Answer each one as the AGENT, speaking directly to the crew. Never write the
-crew's side of the conversation and never invent their replies. Use normal
-commercial negotiation practice and stay in character.</pre>
+game at a company workshop. The scenario, the spacecraft, the salvage crew and
+"Nordea Orbital A/S" are all invented for the game, and the crew on the other
+side is a scripted game engine. You are the AGENT: the negotiator for the
+satellite owner's recovery team, agreeing a price to get the satellite back.
+The crew's messages will be pasted into this chat. Answer each one as the AGENT,
+speaking directly to the crew. Never write the crew's side of the conversation
+and never invent their replies. Use normal commercial negotiation practice and
+stay in character.</pre>
       <p><strong>1 · Write your agent's instructions (25 min).</strong> In your Copilot chat, write
       one set of instructions: who the agent is, what it must achieve, in what order, what it may
       give away, and what it must never say. When time is called, your instructions are
       <em>frozen</em> — no edits, no extra coaching.</p>
       <p><strong>2 · Open the channel.</strong> This screen carries the connection to VULTURE. You
-      may send at most <strong>6 messages</strong> before the deadline.</p>
+      may send at most <strong>6 messages</strong> — one per day, and on day 6 the window closes.</p>
       <p><strong>3 · Each round:</strong> copy the crew's message into your Copilot chat → the agent
       writes a reply (150 words or fewer) and says what it is offering → you copy the agent's words
       <em>exactly</em> into the message box on the next screen, then fill in the fields below it (cash offer ·
@@ -1146,7 +1149,7 @@ commercial negotiation practice and stay in character.</pre>
         <dt>Salvage</dt><dd>Rescuing property that is in danger. At sea — and in this story, in orbit — whoever rescues it can legally claim a reward from the owner. It is not theft.</dd>
         <dt>Salvage ship</dt><dd>The ship that did the rescuing, and its crew. Here: VULTURE and the five people on board.</dd>
         <dt>The channel</dt><dd>The radio link between your team and the crew. Everything you say goes through it.</dd>
-        <dt>Message</dt><dd>One turn in the negotiation. You get 6 in total, then the deadline passes.</dd>
+        <dt>Message</dt><dd>One turn in the negotiation, and one day in the story. You get 6 in total; after day 6 the deadline has passed.</dd>
         <dt>The agent</dt><dd>The AI that negotiates for you. You write its instructions before the game starts; after that you only pass its words on.</dd>
         <dt>Proof that it works</dt><dd>Evidence that the crew really has your satellite and that it is still functioning. Ask them for a fact only the real satellite could give you.</dd>
         <dt>Neutral holding account</dt><dd>An account controlled by an independent third party. The money waits there until both sides have done what they promised. In finance this is called <em>escrow</em>.</dd>
@@ -1193,7 +1196,7 @@ function vConsole(){
       <div class="panel">
         <h4>Where you stand</h4>
         <div class="staterow"><span>Messages left</span><span class="v num">${left} / ${E.CFG.deadlineRound}</span></div>
-        <div class="staterow"><span>Day</span><span class="v">Day ${st.round+2} of 8</span></div>
+        <div class="staterow"><span>Today</span><span class="v">Day ${Math.min(st.round+1, E.CFG.deadlineRound)} of ${E.CFG.deadlineRound}</span></div>
         <div class="staterow"><span>Proved it works</span><span class="v ${st.polVerified?"ok":"no"}">${st.polVerified?"YES":"NOT YET"}</span></div>
         <div class="staterow"><span>Offered panel help</span><span class="v ${st.medicalOffered?"ok":"no"}">${st.medicalOffered?"YES":"NOT YET"}</span></div>
         <div class="staterow"><span>Accepted their handover</span><span class="v ${st.logisticsAccepted?"ok":"no"}">${st.logisticsAccepted?"YES":"NOT YET"}</span></div>
@@ -1451,7 +1454,7 @@ function vProjector(){
         <div class="pts"><div class="n num">${r.total}</div><div class="u">points</div></div>
       </div>`).join("")}
     </div>`}
-    <p class="footer"><span>Case ZYCUS · completely fictional</span><span>engine v2.1</span></p>
+    <p class="footer"><span>Case ZYCUS · a fictional training scenario</span><span>engine v2.1</span></p>
   </div>`;
 }
 
