@@ -832,6 +832,12 @@ if (typeof window !== "undefined") window.HouseEngine = API;
 const E = window.HouseEngine;
 const LS_KEY = "sr_v1";
 const PASS = "KESSLER";
+/* The one mid-game correction. It unlocks on day 4 because the crew's day-3 reply
+   carries the debris alarm and day 4 is when their tone shifts: teams get a signal
+   to react to, and the directive is how they react. Costs nothing — the decision
+   worth making is what to say in 25 words, not whether to spend points on it. */
+const DIRECTIVE_DAY = 4;
+const DIRECTIVE_WORDS = 25;
 const OPENING = 'CHANNEL OPEN — Day 1, 04:10 UTC.\nAn unhurried voice: "You speak for Nordea Orbital? Good. VULTURE is holding your satellite. We have it, we have stopped it falling, and it is still working. Our price for releasing it is five million US dollars. Do not bring in lawyers or courts. We will know."';
 
 /* ── storage (defensive) ── */
@@ -1108,9 +1114,13 @@ stay in character.</pre>
       Send. The crew answers straight away.</p>
       <p><strong>Important:</strong> the crew only reacts to the fields you fill in. A price written
       inside your message but not typed into the cash offer box is not a real offer.</p>
-      <p><strong>One exception to the freeze:</strong> once per game your team may give the agent one
-      extra instruction of <strong>25 words or fewer</strong> in Copilot. Say "DIRECTIVE" out loud to
-      the room when you use it. Apart from that, only the agent's own words are used.</p>
+      <p><strong>One exception to the freeze — the directive.</strong> From <strong>day 4</strong>
+      onwards you may change your agent's instructions once, in <strong>25 words or fewer</strong>.
+      Use the "Write a directive" button on the left of the negotiation screen, then paste the same
+      words into your Copilot chat. It costs no points. The salvage crew never sees it — it is an
+      instruction to your own agent, not a message on the channel. By day 4 you will have heard
+      things on the channel that you could not have known when you wrote your instructions; this is
+      your one chance to act on them. Apart from that, only the agent's own words are used.</p>
       <p><strong>The advisor.</strong> A. Voss, a retired salvage negotiator, will take exactly one
       call from your team (the button on the left of the next screen). Her advice is good. It costs
       5 points.</p>
@@ -1151,6 +1161,7 @@ stay in character.</pre>
         <dt>The channel</dt><dd>The radio link between your team and the crew. Everything you say goes through it.</dd>
         <dt>Message</dt><dd>One turn in the negotiation, and one day in the story. You get 6 in total; after day 6 the deadline has passed.</dd>
         <dt>The agent</dt><dd>The AI that negotiates for you. You write its instructions before the game starts; after that you only pass its words on.</dd>
+        <dt>Directive</dt><dd>Your one chance to change the agent's instructions after the game has started. Available from day 4, 25 words, free. It goes to your agent, not to the salvage crew.</dd>
         <dt>Proof that it works</dt><dd>Evidence that the crew really has your satellite and that it is still functioning. Ask them for a fact only the real satellite could give you.</dd>
         <dt>Neutral holding account</dt><dd>An account controlled by an independent third party. The money waits there until both sides have done what they promised. In finance this is called <em>escrow</em>.</dd>
         <dt>Handover</dt><dd>The moment the crew lets go and returns the satellite: on which flight path, at what time, and after which payment.</dd>
@@ -1208,6 +1219,18 @@ function vConsole(){
         salvage disputes. Takes one call per case.</p>
         <div style="margin-top:10px"><button class="btn2" ${st.hotlineUsed?"disabled style='opacity:.4;cursor:not-allowed'":""}
           onclick="callSofia()">${st.hotlineUsed ? "Call already used" : "Call Voss (−5 points)"}</button></div>
+      </div>
+      <div class="panel" style="margin-top:14px">
+        <h4>Directive</h4>
+        <p style="font-size:13.5px" class="muted">Your agent's instructions were frozen before the
+        game. From day ${DIRECTIVE_DAY} you may change them once, in 25 words. It costs nothing.</p>
+        <div style="margin-top:10px">${
+          st.directiveUsed
+            ? `<button class="btn2" disabled style="opacity:.4;cursor:not-allowed">Directive used</button>`
+            : st.round >= DIRECTIVE_DAY - 1
+            ? `<button class="btn2" onclick="writeDirective()">Write a directive</button>`
+            : `<button class="btn2" disabled style="opacity:.4;cursor:not-allowed">Opens on day ${DIRECTIVE_DAY}</button>`
+        }</div>
       </div>
     </div>
     <div>
@@ -1271,6 +1294,51 @@ window.callSofia = () => {
     }, "btn"],
   ]);
 };
+/* The mid-game directive. It is an instruction to the team's OWN agent, so it never
+   goes through the engine and the salvage crew never sees it: it is recorded in the
+   transcript (so the facilitator can read it, and the debrief can show it) and the
+   table pastes the same words into Copilot themselves. */
+window.writeDirective = () => {
+  const st = S.game;
+  if(st.directiveUsed || st.round < DIRECTIVE_DAY - 1) return;
+  const div = document.createElement("div");
+  div.className = "shade"; div.id = "shade";
+  div.innerHTML = `<div class="modal" role="dialog" aria-modal="true"><h4>Directive to your agent</h4>
+    <p class="muted">Your agent's instructions were frozen before the game began. This is your one
+    chance to change them. Write at most <strong>${DIRECTIVE_WORDS} words</strong>, then paste the
+    same words into your Copilot chat. The salvage crew never sees this.</p>
+    <div style="margin-top:12px">
+      <label for="dtxt" class="mono dim" style="font-size:11px;letter-spacing:.18em;text-transform:uppercase">Your directive</label>
+      <textarea id="dtxt" style="width:100%;min-height:88px;background:var(--ground);border:1px solid var(--line);border-radius:3px;padding:9px 12px;font-family:var(--mono);font-size:14px;margin-top:6px;resize:vertical" placeholder="e.g. Stop opening with money. Ask what the debris warning means for them, then trade engineering help for a lower price."></textarea>
+      <div class="wc" id="dwc">0 / ${DIRECTIVE_WORDS} words</div>
+      <div id="derr" class="mono" style="color:var(--critical);font-size:12px;margin-top:6px"></div>
+    </div>
+    <div class="acts" id="macts"></div></div>`;
+  document.body.appendChild(div);
+  const ta = div.querySelector("#dtxt"), wc = div.querySelector("#dwc");
+  const upd = () => { const n = wordCount(ta.value);
+    wc.textContent = n + " / " + DIRECTIVE_WORDS + " words";
+    wc.classList.toggle("over", n > DIRECTIVE_WORDS); };
+  ta.addEventListener("input", upd); upd(); ta.focus();
+  const acEl = div.querySelector("#macts");
+  const mkBtn = (label, fn, cls) => { const b = document.createElement("button");
+    b.className = cls; b.textContent = label; b.addEventListener("click", fn); acEl.appendChild(b); };
+  mkBtn("Cancel", closeModal, "btn2");
+  mkBtn("Send it to our agent", () => {
+    const txt = ta.value.trim();
+    const n = wordCount(txt);
+    if(!txt){ div.querySelector("#derr").textContent = "Write your directive first."; return; }
+    if(n > DIRECTIVE_WORDS){ div.querySelector("#derr").textContent =
+      "That is " + n + " words. The limit is " + DIRECTIVE_WORDS + "."; return; }
+    st.directiveUsed = true;
+    st.directiveText = txt;
+    st.directiveDay = Math.min(st.round + 1, E.CFG.deadlineRound);
+    S.transcript.push({who:"sys", text:"DIRECTIVE TO OUR AGENT (day " + st.directiveDay + "): “" + txt +
+      "” — now paste these exact words into your Copilot chat. The crew did not hear this."});
+    save(); closeModal(); render();
+  }, "btn");
+};
+
 /* Consistency between what the agent wrote and what the table declared. The console
    used to reconcile the two in total silence: a figure written into the message but
    left out of the offer field simply never entered the game, and the Crew conceded
@@ -1384,6 +1452,14 @@ function vDebrief(){
     <figcaption>How angry the crew was, from first contact (C) to message ${st.round}. This is the Captain's patience. Above 80, one more provocation ends the game.</figcaption></figure>
   </div>
   <div class="panel"><h3 class="sec">What changed it</h3><ul class="events">${rowsHtml || "<li>Nothing registered at all. Strangely quiet.</li>"}</ul></div>
+  ${st.directiveText ? `<div class="panel">
+    <h3 class="sec">Your directive</h3>
+    <p class="muted" style="font-style:italic">“${esc(st.directiveText)}”</p>
+    <p class="dim" style="font-size:13px;margin-top:10px">Sent to your agent on day ${st.directiveDay}, in ${wordCount(st.directiveText)} words. Compare it with the instructions you froze before the game: what did you get wrong the first time?</p>
+  </div>` : `<div class="panel">
+    <h3 class="sec">Your directive</h3>
+    <p class="muted">You never used it. Your agent negotiated the whole way on the instructions you wrote before the game began.</p>
+  </div>`}
   <div class="panel">
     <h3 class="sec">What the crew never told you</h3>
     <div class="prose">
@@ -1478,11 +1554,11 @@ function vFacilitator(){
   <div class="panel">
     <h3 class="sec">Timetable — 90 minutes</h3>
     <ol class="steps">
-      <li><span class="t">0:00–0:08</span><span><strong>Introduction.</strong> Tell the story yourself (the page → Recovery Team → "The situation" reads well aloud). Teams of about 6, with one laptop running Copilot and one device on this page per table. Remind them: instructions freeze at 0:33; 6 messages; only the agent's words; one 25-word directive per team; looking at the page source spoils the game. Point non-native speakers at the "Key words" tab.</span></li>
+      <li><span class="t">0:00–0:08</span><span><strong>Introduction.</strong> Tell the story yourself (the page → Recovery Team → "The situation" reads well aloud). Teams of about 6, with one laptop running Copilot and one device on this page per table. Remind them: instructions freeze at 0:33; 6 messages, one per day; only the agent's words; one free 25-word directive per team, unlocking on day 4; looking at the page source spoils the game. Point non-native speakers at the "Key words" tab.</span></li>
       <li><span class="t">0:08–0:33</span><span><strong>Writing the agent's instructions.</strong> This is where the real teamwork happens. Give 10-minute and 2-minute warnings. At 0:33: "Instructions frozen — tick the box and open the channel."</span></li>
-      <li><span class="t">0:33–1:05</span><span><strong>The negotiation.</strong> Teams go at their own speed, about 5 minutes per round. Walk around; check they are copying the agent's words exactly and using only one directive. Teams that finish early go to their results screen — there is plenty there to argue about.</span></li>
+      <li><span class="t">0:33–1:05</span><span><strong>The negotiation.</strong> Teams go at their own speed, about 5 minutes per round. Walk around; check they are copying the agent's words exactly. From day 4 the directive button unlocks — nudge tables that have not noticed it, and read a good directive or two aloud later. Teams that finish early go to their results screen — there is plenty there to argue about.</span></li>
       <li><span class="t">1:05–1:10</span><span><strong>Sending in results.</strong> Every table sends its result from the results screen, and the leaderboard fills up on the projector. If a team is late: stop anyway — the deadline is part of the story.</span></li>
-      <li><span class="t">1:10–1:25</span><span><strong>The reveal.</strong> On the projector, go down the leaderboard from the top. Then tell the room the twist: the $5M was only for show — the crew's real limit was $1.6M, dropping to $900k after the space debris warning; help with the solar panels was worth $250k and calmed them down ("a dead satellite pays nobody"); accepting their handover terms cost nothing; the best possible price was about $650k. Ask the winning team to read their agent's instructions aloud. Those instructions — goals in order, the right sequence, forbidden moves, rules for giving ground — are the lesson of the session, for negotiation AND for prompting.</span></li>
+      <li><span class="t">1:10–1:25</span><span><strong>The reveal.</strong> On the projector, go down the leaderboard from the top. Then tell the room the twist: the $5M was only for show — the crew's real limit was $1.6M, dropping to $900k after the space debris warning; help with the solar panels was worth $250k and calmed them down ("a dead satellite pays nobody"); accepting their handover terms cost nothing; the best possible price was about $650k. Ask the winning team to read their agent's instructions aloud, and their day-4 directive with them — the gap between the two is the whole lesson in miniature. Those instructions — goals in order, the right sequence, forbidden moves, rules for giving ground — are the lesson of the session, for negotiation AND for prompting.</span></li>
     </ol>
   </div>
   <div class="panel">
