@@ -44,7 +44,7 @@ const NODES = [
     icon: 'flag', kicker: 'FINISHED',
     lines: ['Results screen — send your', 'score to the leaderboard'] },
 ];
-const DECISION = { x: cx, y: 872, rx: 214, ry: 58, line: 'Deal done, or day 6 gone?' };
+const DECISION = { x: cx, y: 872, rx: 214, ry: 58, line: 'Deal done, or was that day 6?' };
 
 const SIDE = [
   { id: 'directive', x: SIDE_X, y: 496, w: SIDE_W, h: 108, accent: C.amber, rot: 0.8,
@@ -244,7 +244,7 @@ group(`rotate(-0.5 ${DECISION.x} ${DECISION.y})`, () => {
   text(DECISION.x, DECISION.y + 7, DECISION.line, { size: 20 });
 });
 
-text(cx, 168, 'Stage 2 · the six days — one message each day', { size: 19, fill: C.amber });
+text(cx, 168, 'Stage 2 · six days, six messages — one each day', { size: 19, fill: C.amber });
 
 const chain = ['prep', 'read', 'paste', 'agent', 'relay', 'fields', 'send'];
 for (let i = 0; i < chain.length - 1; i++) {
@@ -267,7 +267,7 @@ for (const s of SIDE) {
 text(SIDE_X + SIDE_W / 2, 472, 'you may also…', { size: 19, fill: C.ink3 });
 
 const inlineSvg =
-`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Hand-drawn flow chart of how to play Salvage Rights: before day 1 write and freeze your agent's instructions, then each day read the crew's message, copy it into Copilot, copy your agent's reply back word for word, fill in the boxes and press Send. If no deal is done and day 6 has not passed, the crew replies and the loop repeats; otherwise you reach the results screen. You may also send a 25-word directive from day 4, or call the advisor once for five points." style="display:block;width:100%;height:auto">
+`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Hand-drawn flow chart of how to play Salvage Rights: before day 1 write and freeze your agent's instructions, then each day read the crew's message, copy it into Copilot, copy your agent's reply back word for word, fill in the boxes and press Send. If no deal is done and that was not your sixth message, the crew replies and the loop repeats; otherwise you reach the results screen. You may also send a 25-word directive from day 4, or call the advisor once for five points." style="display:block;width:100%;height:auto">
   ${out.join('\n  ')}
 </svg>`;
 
