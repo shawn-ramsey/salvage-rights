@@ -544,7 +544,11 @@ function step(s, move) {
   if (s.over) return { error: "game over" };
   s.round += 1;
   const msg = (move.message || "").slice(0, 1200);
-  const offer = Number.isFinite(move.offer) ? Math.round(move.offer) : null;
+  /* A declared offer of 0 is not an offer, it is a slip of the keyboard — nobody
+     puts nothing on the table on purpose. Counting it as money cost a team the
+     proof-before-cash bonus permanently and drew an insulting-lowball penalty on
+     top: about 11 points for mistyping a field. Blank and zero now mean the same. */
+  const offer = Number.isFinite(move.offer) && move.offer > 0 ? Math.round(move.offer) : null;
   const nc = move.nonCash || {};
   s.marksShouted = /magpie|\b077\b|tivoli|owner.?marks?|service hatch|boot banner|stutter/i.test(msg);
   const notes = [];
@@ -1355,7 +1359,7 @@ function vConsole(){
           </div>
           <div class="row2">
             <div>
-              <label for="foffer">Cash offer in US dollars — leave empty if you offer no money</label>
+              <label for="foffer">Cash offer in US dollars — leave empty (or 0) if you offer no money</label>
               <input id="foffer" type="number" min="0" step="10000" placeholder="e.g. 650000" value="${draft.offer??""}">
             </div>
             <div>
@@ -1494,8 +1498,11 @@ window.sendMove = () => {
   if(!msg){ err.textContent = "Paste your agent's message first."; return; }
   if(n > 150){ err.textContent = "That is more than 150 words, and the channel carries only 150. You may delete whole sentences, or use your one DIRECTIVE to tell the agent to write shorter messages."; return; }
   const offerRaw = $("#foffer").value.trim();
-  const offer = offerRaw === "" ? null : Math.max(0, Math.round(Number(offerRaw)));
-  if(offerRaw !== "" && !Number.isFinite(offer)){ err.textContent = "The cash offer must be a number, or empty."; return; }
+  const offerNum = offerRaw === "" ? null : Number(offerRaw);
+  if(offerRaw !== "" && !Number.isFinite(offerNum)){ err.textContent = "The cash offer must be a number, or empty."; return; }
+  // blank and 0 both mean "no money on the table", so the declared line and the
+  // warnings below read the same way the engine will
+  const offer = offerNum !== null && offerNum > 0 ? Math.round(offerNum) : null;
   const polq = st.polVerified ? null : ($("#fpol").value.trim() || null);
   const warn = relayWarnings(msg, offer, polq, $("#fmed").checked, $("#flog").checked, st);
   if(warn.length && !sendArmed){
