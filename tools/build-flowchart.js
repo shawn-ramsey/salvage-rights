@@ -13,7 +13,7 @@ const fs = require('fs');
 const { JSDOM } = require('jsdom');
 const rough = require('roughjs');
 
-const W = 980, H = 1035;
+const W = 980, H = 1090;
 const COL_X = 58, COL_W = 442;
 const SIDE_X = 556, SIDE_W = 386;
 const cx = COL_X + COL_W / 2;
@@ -25,32 +25,32 @@ const C = {
 };
 
 const NODES = [
-  { id: 'prep', kind: 'start', x: COL_X, y: 14, w: COL_W, h: 86, accent: C.amber, rot: -0.7,
-    icon: 'scroll', kicker: 'BEFORE DAY 1',
-    lines: ['Write your agent’s instructions', 'in Copilot — then freeze them'] },
-  { id: 'read', kind: 'step', x: COL_X, y: 150, w: COL_W, h: 66, accent: C.ink2, rot: 0.5,
+  { id: 'prep', kind: 'start', x: COL_X, y: 14, w: COL_W, h: 106, accent: C.amber, rot: -0.7,
+    icon: 'scroll', kicker: 'STAGE 1 · MAKE YOUR PROMPT',
+    lines: ['Copy the Simulation Header into', 'Notepad, add your instructions', 'underneath. That is your prompt.'] },
+  { id: 'read', kind: 'step', x: COL_X, y: 196, w: COL_W, h: 66, accent: C.ink2, rot: 0.5,
     icon: 'bubble', kicker: '1', lines: ['Read the crew’s message'] },
-  { id: 'paste', kind: 'step', x: COL_X, y: 250, w: COL_W, h: 66, accent: C.ink2, rot: -0.5,
+  { id: 'paste', kind: 'step', x: COL_X, y: 296, w: COL_W, h: 66, accent: C.ink2, rot: -0.5,
     icon: 'chat', kicker: '2', lines: ['Copy it into your Copilot chat'] },
-  { id: 'agent', kind: 'step', x: COL_X, y: 350, w: COL_W, h: 76, accent: C.ink2, rot: 0.6,
+  { id: 'agent', kind: 'step', x: COL_X, y: 396, w: COL_W, h: 76, accent: C.ink2, rot: 0.6,
     icon: 'robot', kicker: '3', lines: ['Your agent writes a reply', '(150 words or fewer)'] },
-  { id: 'relay', kind: 'step', x: COL_X, y: 460, w: COL_W, h: 76, accent: C.ink2, rot: -0.4,
+  { id: 'relay', kind: 'step', x: COL_X, y: 506, w: COL_W, h: 76, accent: C.ink2, rot: -0.4,
     icon: 'copy', kicker: '4', lines: ['Copy that reply back here', 'word for word'] },
-  { id: 'fields', kind: 'step', x: COL_X, y: 570, w: COL_W, h: 96, accent: C.ink2, rot: 0.5,
+  { id: 'fields', kind: 'step', x: COL_X, y: 616, w: COL_W, h: 96, accent: C.ink2, rot: 0.5,
     icon: 'form', kicker: '5', lines: ['Fill in the boxes underneath:', 'money · panel help · handover · proof'] },
-  { id: 'send', kind: 'step', x: COL_X, y: 700, w: COL_W, h: 62, accent: C.amber, rot: -0.6,
+  { id: 'send', kind: 'step', x: COL_X, y: 746, w: COL_W, h: 62, accent: C.amber, rot: -0.6,
     icon: 'plane', kicker: '6', lines: ['Press SEND'] },
-  { id: 'end', kind: 'end', x: COL_X, y: 925, w: COL_W, h: 86, accent: C.calm, rot: 0.6,
+  { id: 'end', kind: 'end', x: COL_X, y: 982, w: COL_W, h: 86, accent: C.calm, rot: 0.6,
     icon: 'flag', kicker: 'FINISHED',
     lines: ['Results screen — send your', 'score to the leaderboard'] },
 ];
-const DECISION = { x: cx, y: 830, rx: 214, ry: 62, line: 'Deal done, or day 6 gone?' };
+const DECISION = { x: cx, y: 872, rx: 214, ry: 58, line: 'Deal done, or day 6 gone?' };
 
 const SIDE = [
-  { id: 'directive', x: SIDE_X, y: 452, w: SIDE_W, h: 108, accent: C.amber, rot: 0.8,
+  { id: 'directive', x: SIDE_X, y: 496, w: SIDE_W, h: 108, accent: C.amber, rot: 0.8,
     icon: 'megaphone', kicker: 'FROM DAY 4 · ONCE · FREE',
     lines: ['Send your agent 25 words', 'to change its instructions'], to: 'relay' },
-  { id: 'voss', x: SIDE_X, y: 596, w: SIDE_W, h: 108, accent: C.tense, rot: -0.7,
+  { id: 'voss', x: SIDE_X, y: 640, w: SIDE_W, h: 108, accent: C.tense, rot: -0.7,
     icon: 'phone', kicker: 'ONCE PER GAME · −5 POINTS',
     lines: ['Call Voss the advisor for', 'one hint about what you', 'are getting wrong'], to: 'fields' },
 ];
@@ -244,25 +244,27 @@ group(`rotate(-0.5 ${DECISION.x} ${DECISION.y})`, () => {
   text(DECISION.x, DECISION.y + 7, DECISION.line, { size: 20 });
 });
 
+text(cx, 168, 'Stage 2 · the six days — one message each day', { size: 19, fill: C.amber });
+
 const chain = ['prep', 'read', 'paste', 'agent', 'relay', 'fields', 'send'];
 for (let i = 0; i < chain.length - 1; i++) {
   const a = node(chain[i]), b = node(chain[i + 1]);
-  arrow(cx, a.y + a.h + 2, cx, b.y - 6);
+  arrow(cx, a.y + a.h + 2, cx, b.y - 6 - (b.id === 'read' ? 44 : 0));
 }
 arrow(cx, node('send').y + node('send').h + 2, cx, DECISION.y - DECISION.ry - 6);
 arrow(cx, DECISION.y + DECISION.ry, cx, node('end').y - 6, { color: C.calm });
-text(cx + 20, node('end').y - 22, 'yes!', { anchor: 'start', size: 19, fill: C.calm });
+text(cx + 22, node('end').y - 26, 'yes!', { anchor: 'start', size: 19, fill: C.calm });
 
 elbow([[DECISION.x - DECISION.rx, DECISION.y], [24, DECISION.y],
        [24, node('read').y + 30], [COL_X - 6, node('read').y + 30]], C.ink3);
-raw(`<text transform="rotate(-90 17 560)" x="17" y="560" text-anchor="middle" ` +
+raw(`<text transform="rotate(-90 17 600)" x="17" y="600" text-anchor="middle" ` +
     `font-family="var(--hand)" font-size="18" fill="${C.ink3}">no — they reply, next day</text>`);
 
 for (const s of SIDE) {
   const t = node(s.to);
   arrow(s.x - 8, s.y + s.h / 2, t.x + t.w + 10, t.y + t.h / 2, { dash: true, color: s.accent });
 }
-text(SIDE_X + SIDE_W / 2, 428, 'you may also…', { size: 19, fill: C.ink3 });
+text(SIDE_X + SIDE_W / 2, 472, 'you may also…', { size: 19, fill: C.ink3 });
 
 const inlineSvg =
 `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Hand-drawn flow chart of how to play Salvage Rights: before day 1 write and freeze your agent's instructions, then each day read the crew's message, copy it into Copilot, copy your agent's reply back word for word, fill in the boxes and press Send. If no deal is done and day 6 has not passed, the crew replies and the loop repeats; otherwise you reach the results screen. You may also send a 25-word directive from day 4, or call the advisor once for five points." style="display:block;width:100%;height:auto">
