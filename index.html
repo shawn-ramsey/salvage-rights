@@ -734,7 +734,7 @@ function reply(s, offer, polAnswer, notes, catastrophe) {
 
   if (polAnswer) L.push("About the question you asked: " + polAnswer);
   if (s.cashOfferedBeforePol && s.events.some(e => e.round === s.round && e.why === "cash offered before proof of life"))
-    L.push('"You named a price before you knew what you were buying. We will take the money. Whether that was wise is your problem, not ours."');
+    L.push('"You named a price before you knew what you were buying. Nothing is agreed here — but the Captain noticed. Owners who pay before they check are the easiest money in this business."');
 
   const counters = {
     CALM: [
