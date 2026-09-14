@@ -891,43 +891,82 @@ const WHY = {
   "the channel settled":            ["▼","A round that annoyed nobody. The Captain calmed down a little."],
 };
 
-/* ── board data ── */
-function readBoard(){
-  try{ return JSON.parse(document.getElementById("board").textContent) || []; }catch(e){ return []; }
-}
+/* ── board data ──
+   A page served from a static host cannot write to itself, so the leaderboard
+   lives in a small hosted table (Supabase's REST endpoint). Each team writes
+   ONE row, keyed by its own name, and nothing here ever reads the whole board
+   and writes it back — so ten tables finishing in the same minute cannot
+   overwrite one another. Fill BOARD in before the event: docs/leaderboard.md.
+   Left empty the game still plays perfectly; only the shared board is off, and
+   every screen says so plainly instead of pretending to wait for results. */
+const BOARD = {
+  url: "https://srcwyrjatrrpzdxxmhxd.supabase.co/rest/v1/results",
+  key: "sb_publishable_xZFJ6x8f6L9TUka0M9wHFg_NqNJQXBY",
+};
+const BOARD_VIEWS = ["projector","facilitator","debrief"];
+const boardLive = () => !!(BOARD.url && BOARD.key);
+let boardRows = [];
+let boardBusy = false;
+
+const boardHeaders = extra => Object.assign({
+  apikey: BOARD.key,
+  Authorization: "Bearer " + BOARD.key,
+  "Content-Type": "application/json",
+}, extra || {});
+
+/* the table speaks snake_case; the app speaks camelCase */
+const rowFromDb = r => ({ team:r.team, total:Number(r.total), outcome:r.outcome,
+  paid: r.paid == null ? null : Number(r.paid), peakVol:r.peak_vol, rounds:r.rounds,
+  trace: Array.isArray(r.trace) ? r.trace : [], ts:Number(r.ts) });
+/* team_key is the primary key, lower-cased, so a table that re-enters its name
+   with different capitalisation updates its row instead of appearing twice */
+const rowToDb = r => ({ team_key:String(r.team).toLowerCase(), team:r.team, total:r.total,
+  outcome:r.outcome, paid:r.paid, peak_vol:r.peakVol, rounds:r.rounds, trace:r.trace, ts:r.ts });
+
+function readBoard(){ return boardRows; }
 const cleanName = n => String(n).replace(/[<>&"'`]/g,"").trim().slice(0,32);
 
-/* row: {team,total,outcome,paid,peakVol,rounds,trace,ts} */
-function mergeRow(rows, row){
-  const k = row.team.toLowerCase();
-  const rest = rows.filter(r => (r.team||"").toLowerCase() !== k);
-  rest.push(row);
-  return rest.sort((a,b) => b.total - a.total || a.ts - b.ts);
+async function fetchBoard(){
+  if(!boardLive()) return false;
+  try{
+    const res = await fetch(BOARD.url + "?select=*", { headers: boardHeaders(), cache:"no-store" });
+    if(!res.ok) return false;
+    const rows = await res.json();
+    boardRows = rows.map(rowFromDb).sort((a,b) => b.total - a.total || a.ts - b.ts);
+    return true;
+  }catch(e){ return false; }
 }
-
-async function publishBoard(mutate){
-  let art = null;
-  try{ if(typeof claude !== "undefined" && claude.use) art = await claude.use("artifact"); }catch(e){}
-  if(!art) return {ok:false, code:"unavailable"};
-  let src;
+/* Re-render only when the board actually changed, so the projector does not
+   flicker every few seconds while the whole room is watching it. The re-render
+   asks for a refresh of its own on the way through the router, which boardBusy
+   absorbs — so one action is one GET. */
+async function refreshBoard(){
+  if(boardBusy || !boardLive()) return false;
+  boardBusy = true;
   try{
-    const res = await fetch(location.href, {cache:"no-store"});
-    if(!res.ok) throw 0;
-    src = await res.text();
-  }catch(e){ return {ok:false, code:"nofetch"}; }
-  const rx = /(<script id="board" type="application\/json">)([\s\S]*?)(<\/script>)/;
-  const m = src.match(rx);
-  if(!m) return {ok:false, code:"nomarker"};
-  let rows = []; try{ rows = JSON.parse(m[2]) || []; }catch(e){}
-  rows = mutate(rows);
-  const json = JSON.stringify(rows).replace(/</g,"\\u003c");
-  src = src.replace(rx, (_,a,__,c) => a + json + c);
+    const before = JSON.stringify(boardRows);
+    const ok = await fetchBoard();
+    if(JSON.stringify(boardRows) !== before) render();
+    return ok;
+  } finally { boardBusy = false; }
+}
+function refreshSoon(){ refreshBoard(); }
+async function postRow(row){
+  if(!boardLive()) return {ok:false, code:"unconfigured"};
   try{
-    await art.publish(src);
-    return {ok:true};
-  }catch(e){
-    return {ok:false, code:(e && e.code) || "error"};
-  }
+    const res = await fetch(BOARD.url, { method:"POST",
+      headers: boardHeaders({ Prefer:"resolution=merge-duplicates,return=minimal" }),
+      body: JSON.stringify(rowToDb(row)) });
+    return res.ok ? {ok:true} : {ok:false, code:"HTTP " + res.status};
+  }catch(e){ return {ok:false, code:"no network"}; }
+}
+async function deleteRows(filter){
+  if(!boardLive()) return {ok:false, code:"unconfigured"};
+  try{
+    const res = await fetch(BOARD.url + "?" + filter, { method:"DELETE",
+      headers: boardHeaders({ Prefer:"return=minimal" }) });
+    return res.ok ? {ok:true} : {ok:false, code:"HTTP " + res.status};
+  }catch(e){ return {ok:false, code:"no network"}; }
 }
 
 /* ── Voss hotline (deterministic hint from hidden state) ── */
@@ -1650,18 +1689,22 @@ function vDebrief(){
 window.postResult = async () => {
   const f = S.result, st = S.game;
   const err = $("#posterr");
+  if(!boardLive()){
+    err.textContent = "The shared leaderboard is not switched on for this page. Please tell the facilitator your score: " + f.total;
+    return;
+  }
   err.textContent = "Sending…";
   const ts = Date.now();
   const row = { team: S.team, total: f.total, outcome: f.outcome, paid: f.paid,
     peakVol: f.peakVol, rounds: f.rounds, trace: st.volTrace, ts };
   S.pendingPost = true; S.postedTs = ts; save();
-  const r = await publishBoard(rows => mergeRow(rows, row));
-  if(r.ok){ S.pendingPost = false; save(); err.textContent = "Sent."; }
-  else if(r.code === "conflict"){ /* view reloads to winner; pendingPost survives */ }
-  else if(r.code === "unavailable" || r.code === "not_granted" || r.code === "not_writer"){
-    err.textContent = "This screen cannot write to the leaderboard. Please tell the facilitator your score: " + f.total;
+  const r = await postRow(row);
+  if(r.ok){
+    S.pendingPost = false; save();
+    err.textContent = "Sent.";
+    await refreshBoard();   // flips the button to the "on the leaderboard" chip
   } else {
-    err.textContent = "Could not send (" + r.code + "). Please try again, or just tell the facilitator your score out loud.";
+    err.textContent = "Could not send (" + r.code + "). Please try again, or just tell the facilitator your score out loud: " + f.total;
   }
 };
 
@@ -1675,7 +1718,9 @@ function vProjector(){
       <span class="spacer"></span>
       <span class="mono dim" style="font-size:12px">${rows.length} team${rows.length===1?"":"s"} reported</span>
       <button onclick="goHome()">Exit</button></div>
-    ${rows.length === 0 ? `<div class="bignote">WAITING FOR THE FIRST RESULT…<br><br>
+    ${!boardLive() ? `<div class="bignote">THE SHARED LEADERBOARD IS NOT SWITCHED ON<br><br>
+      <span style="font-size:12px">(no board address is configured in this page — teams will have to read their scores out)</span></div>`
+      : rows.length === 0 ? `<div class="bignote">WAITING FOR THE FIRST RESULT…<br><br>
       <span style="font-size:12px">(this updates by itself as teams send in their results)</span></div>` : `
     <div class="board">${rows.map((r,i) => `
       <div class="brow ${i===0?"first":""}">
@@ -1740,9 +1785,9 @@ function vFacilitator(){
   </div>
   <div class="warnbox">Practical notes: each table plays on ONE device and ONE browser, because the
   game is saved there. If a device is used again by another table, use "Reset this device" (home
-  page, small print). The leaderboard is stored inside the page itself — sending a result
-  republishes it, and open screens refresh by themselves. If two teams send at the same moment, the
-  team just sends again. Someone determined could read the page source; the game's numbers are
+  page, small print). The leaderboard is stored in a small hosted table, and the projector refreshes
+  itself every few seconds. Each table writes only its own row, so two tables sending at the same
+  moment cannot overwrite each other. Someone determined could read the page source; the game's numbers are
   encoded, but the real protection is the rule ("looking at the source spoils it") and you walking
   around the room.</div>`;
 }
@@ -1750,19 +1795,24 @@ window.facAuth = () => {
   if($("#pw").value.trim().toUpperCase() === PASS){ S.facAuth = PASS; save(); render(); }
   else $("#pwerr").textContent = "Wrong passcode.";
 };
+function facSay(text){ const el = $("#facmsg"); if(el) el.textContent = text; }
 window.dropRow = async (team) => {
-  $("#facmsg").textContent = "Removing…";
-  const r = await publishBoard(rows => rows.filter(x => (x.team||"").toLowerCase() !== team.toLowerCase()));
-  $("#facmsg").textContent = r.ok ? "Removed." : "Could not save the change (" + r.code + ").";
+  facSay("Removing…");
+  const r = await deleteRows("team_key=eq." + encodeURIComponent(String(team).toLowerCase()));
+  if(r.ok) await refreshBoard();          // this replaces #facmsg, so speak after it
+  facSay(r.ok ? "Removed." : "Could not save the change (" + r.code + ").");
 };
 window.clearBoard = () => {
-  modal("Clear the leaderboard?", "This removes every result from the shared page. Each team's own device keeps its game.", [
+  modal("Clear the leaderboard?", "This removes every result from the shared board. Each team's own device keeps its own game.", [
     ["Cancel", closeModal, "btn2"],
     ["Clear it", async () => {
       closeModal();
-      $("#facmsg").textContent = "Clearing…";
-      const r = await publishBoard(() => []);
-      $("#facmsg").textContent = r.ok ? "Cleared." : "Could not save the change (" + r.code + ").";
+      facSay("Clearing…");
+      /* PostgREST refuses an unfiltered DELETE — a good rule. team_key is the
+         primary key and is never null, so this matches every row without naming one. */
+      const r = await deleteRows("team_key=not.is.null");
+      if(r.ok) await refreshBoard();
+      facSay(r.ok ? "Cleared." : "Could not save the change (" + r.code + ").");
     }, "btn2 btn-danger"],
   ]);
 };
@@ -1793,8 +1843,15 @@ function render(){
   else if(v === "projector") vProjector();
   else if(v === "facilitator") vFacilitator();
   else vHome();
+  /* Every path into a board view comes through here, so this is the only place
+     that has to ask for fresh rows. refreshBoard() re-renders only when the rows
+     actually changed, and boardBusy stops that second render asking again. */
+  if(BOARD_VIEWS.includes(v)) refreshSoon();
 }
 render();
+
+/* The projector is a screen nobody touches. It refreshes itself. */
+setInterval(() => { if((S.view||"home") === "projector") refreshSoon(); }, 6000);
 </script>
 
 <script>
