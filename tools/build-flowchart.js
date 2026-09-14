@@ -50,9 +50,6 @@ const SIDE = [
   { id: 'directive', x: SIDE_X, y: 496, w: SIDE_W, h: 108, accent: C.amber, rot: 0.8,
     icon: 'megaphone', kicker: 'FROM DAY 4 · ONCE · FREE',
     lines: ['Send your agent 25 words', 'to change its instructions'], to: 'relay' },
-  { id: 'voss', x: SIDE_X, y: 640, w: SIDE_W, h: 108, accent: C.tense, rot: -0.7,
-    icon: 'phone', kicker: 'ONCE PER GAME · −5 POINTS',
-    lines: ['Call Voss the advisor for', 'one hint about what you', 'are getting wrong'], to: 'fields' },
 ];
 
 const node = id => NODES.find(n => n.id === id);
@@ -267,7 +264,7 @@ for (const s of SIDE) {
 text(SIDE_X + SIDE_W / 2, 472, 'you may also…', { size: 19, fill: C.ink3 });
 
 const inlineSvg =
-`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Hand-drawn flow chart of how to play Salvage Rights: before day 1 write and freeze your agent's instructions, then each day read the crew's message, copy it into Copilot, copy your agent's reply back word for word, fill in the boxes and press Send. If no deal is done and that was not your sixth message, the crew replies and the loop repeats; otherwise you reach the results screen. You may also send a 25-word directive from day 4, or call the advisor once for five points." style="display:block;width:100%;height:auto">
+`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Hand-drawn flow chart of how to play Salvage Rights: before day 1 write and freeze your agent's instructions, then each day read the crew's message, copy it into Copilot, copy your agent's reply back word for word, fill in the boxes and press Send. If no deal is done and that was not your sixth message, the crew replies and the loop repeats; otherwise you reach the results screen. You may also send a 25-word directive from day 4." style="display:block;width:100%;height:auto">
   ${out.join('\n  ')}
 </svg>`;
 
