@@ -552,6 +552,12 @@ function step(s, move) {
   const offer = Number.isFinite(move.offer) && move.offer > 0 ? Math.round(move.offer) : null;
   const nc = move.nonCash || {};
   s.marksShouted = /magpie|\b077\b|tivoli|owner.?marks?|service hatch|boot banner|stutter/i.test(msg);
+  /* asking after the satellite's condition in the body of the message: real
+     diligence, but for facts the Crew could simply invent. Worth answering
+     differently from a team that asked nothing at all. */
+  s.askedCondition =
+    /(\?|confirm|tell us|provide|report|advise|what is|what are|how much|send us|give us|let us know|update us)/i.test(msg) &&
+    /\b(batter\w*|power|charg\w*|condition|status|telemetry|health|damage|operational|functioning|attitude)\b/i.test(msg);
   const notes = [];
 
   // ---- interpret the transmission -------------------------------------------------
@@ -841,6 +847,8 @@ function reply(s, offer, polAnswer, notes, catastrophe) {
       ? '"You asked, and we gave you an answer you cannot check. Ask us for something only your own people could know — the people who built that satellite left marks on it."'
       : s.marksShouted
       ? '"You keep saying these words at us like a magic spell. That is not a question. Ask us one thing clearly — name a mark and ask us to read it back — and you will get the answer on this channel."'
+      : s.askedCondition
+      ? '"You asked after its condition. We could tell you anything we liked and you would have no way to check a word of it. Ask us instead for something only your own people could know — the builders left marks on that satellite — and put it as one plain question."'
       : s.polNags === 1
       ? '"You ask nothing about the condition of your own satellite? Strange owners."'
       : '"Still nothing about your own satellite. Think about how that looks from up here: either you do not know what you are buying, or you do not care."');
