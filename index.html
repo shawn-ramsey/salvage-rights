@@ -1515,6 +1515,19 @@ window.writeDirective = () => {
    they never offered, and that then hardened into the settlement text.
    These are WARNINGS, not rules. Press Send twice and it goes exactly as written. */
 let sendArmed = false;
+/* Set the declaration the agent's own words already asked for. The person still
+   presses the button; nothing is inferred on their behalf without a click. */
+function applyFix(fix){
+  if(!fix) return;
+  if(fix.kind === "logistics"){
+    const el = $("#flog");
+    if(el && !el.disabled){ el.checked = true; el.dispatchEvent(new Event("change", {bubbles:true})); }
+  } else if(fix.kind === "proof"){
+    const el = $("#fpol");
+    if(el && !el.disabled){ el.value = fix.value; el.dispatchEvent(new Event("input", {bubbles:true})); el.focus(); }
+  }
+  disarmSend();
+}
 /* Editing anything after a warning puts the gate back up: the second press has
    to be a decision about what is on screen NOW. */
 function disarmSend(){
@@ -1523,7 +1536,9 @@ function disarmSend(){
   const e = $("#senderr"); if(e) e.innerHTML = "";
 }
 function relayWarnings(msg, offer, polq, med, log, st){
+  /* each entry is {text, fix?} — fix is what the button will do */
   const w = [];
+  const say = t => w.push({ text: t });
   /* Read amounts written as "$650,000" and as "650,000 dollars" alike — plain-English
      messages usually spell the currency out, and the warning has to see those too. */
   const money = [];
@@ -1540,17 +1555,25 @@ function relayWarnings(msg, offer, polq, med, log, st){
   scanMoney(/(?:\$|\bUSD\b)\s*([\d][\d,.]*)\s*(m|mm|million|k|thousand)?/gi);
   scanMoney(/\b([\d][\d,.]*)\s*(m|mm|million|k|thousand)?\s*(?:US\s+)?dollars?\b/gi);
   if (money.length && offer == null)
-    w.push("Your message mentions an amount of money, but the cash offer box is empty. The crew only reacts to the boxes below — a number that is only in the text is not a real offer.");
+    say("Your message mentions an amount of money, but the cash offer box is empty. The crew only reacts to the boxes below — a number that is only in the text is not a real offer.");
   else if (money.length && offer != null && !money.some(v => Math.abs(v - offer) <= Math.max(1000, offer * 0.02)))
-    w.push("The amount in your message is not the same as the cash offer you typed (" + fmtM(offer) + "). The crew reacts to the box, not to the text.");
+    say("The amount in your message is not the same as the cash offer you typed (" + fmtM(offer) + "). The crew reacts to the box, not to the text.");
   const marksNamed = /(magpie|\b077\b|tivoli|owner.?marks?|service hatch|boot banner|start-?up message|stutter|etch\w*)/i.test(msg);
   const asksProof = marksNamed || (msg.includes("?") && /(hatch|beacon|blink|flash|boot|banner|start-?up|flight computer|prove|proof|verify|confirm)/i.test(msg));
-  if (asksProof && !polq && !st.polVerified)
-    w.push("Your message looks like it asks the crew to prove they really have the satellite, but the proof question box is empty. Only that box is heard as a question.");
+  if (asksProof && !polq && !st.polVerified) {
+    /* lift the sentence that does the asking, so the fix is one click */
+    const sentences = msg.match(/[^.!?\n]+[.!?]*/g) || [];
+    const picked = sentences.find(s => /(magpie|\b077\b|tivoli|service hatch|boot banner|start-?up message|stutter)/i.test(s))
+      || sentences.find(s => s.includes("?"));
+    w.push({
+      text: "Your message looks like it asks the crew to prove they really have the satellite, but the proof question box is empty. Only that box is heard as a question.",
+      fix: picked ? { kind: "proof", label: "Use that sentence as the question", value: picked.trim().slice(0, 140) } : null,
+    });
+  }
   if (med && !st.medicalOffered && !/(solar|array|panel|batter|power|uplink|re-?orient|attitude|charg|engineer)/i.test(msg))
-    w.push("You ticked the solar panel help box, but nothing in your message offers that help. The crew will answer as if you had offered it.");
+    say("You ticked the solar panel help box, but nothing in your message offers that help. The crew will answer as if you had offered it.");
   if (!med && !st.medicalOffered && /\b(?:we|our|nordea)\b(?:(?!\byou\b)[^.!?]){0,60}\b(?:offer|provide|send|give|supply|arrange|share|assist|help)\w*\b(?:(?!\byou\b)[^.!?]){0,70}\b(?:solar panels?|solar arrays?|arrays?|panels?|batter\w*|charg\w*|power)\b/i.test(msg))
-    w.push("Your message looks like it offers your engineers' help with the solar panels, but that box is not ticked. The crew only counts the box.");
+    say("Your message looks like it offers your engineers' help with the solar panels, but that box is not ticked. The crew only counts the box.");
   /* "We will not accept unusual handover arrangements" was being read as an
      acceptance, and the player advised to tick a box contradicting their own
      message. Look at the words around the hit before believing it. */
@@ -1564,9 +1587,12 @@ function relayWarnings(msg, offer, polq, med, log, st){
     return false;
   };
   if (!log && !st.logisticsAccepted && acceptsHandover())
-    w.push("Your message accepts their handover terms, but the handover box is not ticked. The crew only counts the box — and without it, no deal can be closed.");
+    w.push({
+      text: "Your message accepts their handover terms, but the handover box is not ticked. The crew only counts the box — and without it, no deal can be closed.",
+      fix: { kind: "logistics", label: "Tick the handover box" },
+    });
   if (/(here'?s a draft|would you like|let me know|feel free|option [abc]\b|option \d\b|reasoning\s*:|options\s*:|recommendation\s*:|agent response|i'?ve kept it|hope this helps|shall i|want me to)/i.test(msg))
-    w.push("This still has Copilot's own wrapping around it — words written to you, not to the crew. Send only the agent's message itself.");
+    say("This still has Copilot's own wrapping around it — words written to you, not to the crew. Send only the agent's message itself.");
   return w;
 }
 
@@ -1594,8 +1620,25 @@ window.sendMove = () => {
     sendArmed = true;
     const b = $("#sendbtn");
     if(b) b.textContent = offer == null ? "Send with NO cash offer" : "Send " + fmtM(offer);
-    err.innerHTML = warn.map(t => "&#9888; " + esc(t)).join("<br>") +
-      "<br><strong>Read the button. Press it again to send exactly what it says.</strong>";
+    err.innerHTML = "";
+    for(const item of warn){
+      const line = document.createElement("div");
+      line.style.marginBottom = "6px";
+      line.innerHTML = "&#9888; " + esc(item.text);
+      if(item.fix){
+        const fb = document.createElement("button");
+        fb.type = "button";
+        fb.className = "btn2";
+        fb.style.cssText = "display:block;margin-top:6px;font-size:12px;padding:5px 11px";
+        fb.textContent = item.fix.label;
+        fb.addEventListener("click", () => applyFix(item.fix));
+        line.appendChild(fb);
+      }
+      err.appendChild(line);
+    }
+    const note = document.createElement("div");
+    note.innerHTML = "<strong>Or read the button and press it again to send exactly what it says.</strong>";
+    err.appendChild(note);
     return;
   }
   sendArmed = false;
