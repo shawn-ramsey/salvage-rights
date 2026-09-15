@@ -1403,9 +1403,9 @@ function vConsole(){
         <h4>Where you stand</h4>
         <div class="staterow"><span>Messages left</span><span class="v num">${left} / ${E.CFG.deadlineRound}</span></div>
         <div class="staterow"><span>Today</span><span class="v">Day ${Math.min(st.round+1, E.CFG.deadlineRound)} of ${E.CFG.deadlineRound}</span></div>
-        <div class="staterow"><span>Checked they have it</span><span class="v ${st.polVerified?"ok":"no"}">${st.polVerified?"YES":"NOT YET"}</span></div>
-        <div class="staterow"><span>Offered panel help</span><span class="v ${st.medicalOffered?"ok":"no"}">${st.medicalOffered?"YES":"NOT YET"}</span></div>
-        <div class="staterow"><span>Accepted their handover</span><span class="v ${st.logisticsAccepted?"ok":"no"}">${st.logisticsAccepted?"YES":"NOT YET"}</span></div>
+        ${st.polVerified ? `<div class="staterow"><span>Checked they have it</span><span class="v ok">DONE</span></div>` : ""}
+        ${st.medicalOffered ? `<div class="staterow"><span>Offered panel help</span><span class="v ok">DONE</span></div>` : ""}
+        ${st.logisticsAccepted ? `<div class="staterow"><span>Accepted their handover</span><span class="v ok">DONE</span></div>` : ""}
         <div class="staterow"><span>Their current price</span><span class="v num">${fmtM(st.counter)}</span></div>
       </div>
       <div class="panel" style="margin-top:14px">
