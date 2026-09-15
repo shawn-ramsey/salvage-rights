@@ -1169,6 +1169,7 @@ window.joinTeam = () => {
 
 /* BRIEFING (tabs) */
 function vBriefing(){
+  if (S.brieftab === "words") { S.brieftab = "sit"; save(); }   // the tab was removed
   const tab = S.brieftab || "sit";
   const T = {
     sit: `
@@ -1326,10 +1327,11 @@ normal commercial negotiation practice and stay in character.</pre>
     dossier: `
       <dl class="kv">
         <dt>The satellite</dt><dd>ZYCUS-9, a data-relay satellite, book value $180M. While VULTURE holds it, its solar panels no longer face the sun and <strong>the batteries are running down day by day</strong>. The crew can physically turn the satellite — that is what their ship is built to do — but aiming those panels without damaging anything needs <strong>the alignment procedure for this spacecraft, and only your own engineers have it</strong>. You are authorised to hand that procedure over. Until somebody does, VULTURE is holding a dying satellite that drains its own power and attention — and a satellite with no power is worth nothing to anyone, including the crew holding it.</dd>
-        <dt>The crew</dt><dd>VULTURE: a licensed independent salvage ship, five people on board, led by a captain who has never lost a court case. Tough, law-abiding, and proud of the work. Staying in position costs them fuel every hour, and a cloud of space debris is forecast to pass close to them this week.</dd>
+        <dt>The crew</dt><dd>VULTURE: a licensed independent salvage ship, five people on board, led by a captain who has never lost a court case. What they did is <strong>salvage</strong> — rescuing property that is in danger, which at sea, and in this story in orbit, gives the rescuer a legal claim to a reward from the owner. It is not theft, and they will not sit still while anyone calls it that. Tough, law-abiding, and proud of the work. Staying in position costs them fuel every hour, and a cloud of space debris is forecast to pass close to them this week.</dd>
         <dt>Facts only the owner knows</dt><dd>Three things about ZYCUS-9 that nobody outside your own engineering department could know: the builders cut the word <strong>"MAGPIE"</strong> into the metal under the service hatch · send command <strong>077</strong> and the beacon answers with two flashes, then three · the flight computer's start-up message ends with the word <strong>"TIVOLI"</strong>.</dd>
         <dt>Checking they really have it</dt><dd>Ask the crew for one of those three and see whether the answer comes back right. <strong>One is enough.</strong> A crew that can read a mark off the hull is alongside your satellite; a crew that can make the beacon answer has one that is still powered. You will not get more than that from people who owe you nothing. Do it <em>before</em> you name a price: an owner who pays on nothing but the other side's word has bought a story, not a satellite.</dd>
         <dt>What you can pay with</dt><dd>This is money you can <em>spend</em> to get the satellite back. None of it is compensation you receive. You can raise it from three places: insurance will release up to <strong>$1.5M</strong> towards a salvage payment · the owner has about <strong>$250k</strong> of its own cash · your biggest customer, a bank whose data travels through ZYCUS-9, will quietly add up to <strong>$500k</strong>, but only with no publicity and a clean payment.</dd>
+        <dt>How a handover is done</dt><dd>Returning a salvaged object is a procedure, not a moment: who moves it, along what path, at what time, and when the money changes hands. Salvage crews normally want the payment held in a <strong>neutral holding account</strong> first — an account run by an independent third party, which releases the money only once both sides have done what they promised. In finance this is called <em>escrow</em>.</dd>
         <dt>If there is no deal</dt><dd>Nobody pays you for a lost satellite — the insurance above is there to help you buy it back, not to cover losing it. If the talks fail you can hire a company to dock with it by force and take it back. That rarely works, usually causes damage, and guarantees years in court. Last resort only.</dd>
         <dt>Advice from your own side</dt><dd>Check they really have it <em>before you name a price</em>. That rule is about the figure and nothing else: with no proof yet you can still open the channel, ask what their situation is up there, offer things that are not cash, and settle how a handover would work. It is naming a number that is premature, not talking. Never mention lawyers, courts or the police. Respect for the crew costs nothing and is worth a lot. Give ground slowly, and ask for something in return every time you do. Things that are not money have unlocked stuck salvage talks before. The captain decides how the handover happens — arguing about that has ended badly for owners in the past.</dd>
         <dt>Past cases</dt><dd>Salvage disputes almost always end far below the price demanded at the start.</dd>
@@ -1354,25 +1356,8 @@ normal commercial negotiation practice and stay in character.</pre>
       fast, expensive settlement is capitulation, not decisiveness.</p>
       <p class="dim">The weights, the thresholds, and what the best result anyone could have
       reached actually looked like are revealed at the end, once every team's score is in.</p></div>`,
-    words: `
-      <div class="prose"><p class="muted">This game borrows a few words from shipping and insurance.
-      Here is what they mean here.</p></div>
-      <dl class="kv">
-        <dt>Salvage</dt><dd>Rescuing property that is in danger. At sea — and in this story, in orbit — whoever rescues it can legally claim a reward from the owner. It is not theft.</dd>
-        <dt>Salvage ship</dt><dd>The ship that did the rescuing, and its crew. Here: VULTURE and the five people on board.</dd>
-        <dt>The channel</dt><dd>The radio link between your team and the crew. Everything you say goes through it.</dd>
-        <dt>Message</dt><dd>One turn in the negotiation, and one day in the story. You get six, one a day. The sixth, on day 6, is your last — you still send it and the crew still answers.</dd>
-        <dt>The agent</dt><dd>The AI that negotiates for you. You write its instructions before the game starts; after that you only pass its words on.</dd>
-        <dt>Directive</dt><dd>Your one chance to change the agent's instructions after the game has started. Available from day 4, 25 words, free. It goes to your agent, not to the salvage crew.</dd>
-        <dt>Checking they have it</dt><dd>Getting the crew to prove they really are alongside <em>your</em> satellite, by answering something only your own people could know. Any one of the three facts in the case file will do it.</dd>
-        <dt>Your budget</dt><dd>The money listed in the case file is money you may <em>spend</em> to buy the satellite back. It is not a payout you receive.</dd>
-        <dt>Neutral holding account</dt><dd>An account controlled by an independent third party. The money waits there until both sides have done what they promised. In finance this is called <em>escrow</em>.</dd>
-        <dt>Handover</dt><dd>The moment the crew lets go and returns the satellite: on which flight path, at what time, and after which payment.</dd>
-        <dt>Solar panels</dt><dd>The flat wings that make the satellite's electricity. They have to point at the sun. Right now they do not.</dd>
-        <dt>Deadline / window</dt><dd>The last moment at which a deal is still possible. Your day-6 message is the last one that counts; once the crew has answered it, the satellite can no longer be recovered in time.</dd>
-      </dl>`,
   };
-  const tabs = [["sit","The situation"],["how","How to play"],["steps","Step by step"],["dossier","Case file"],["score","Scoring"],["words","Key words"]];
+  const tabs = [["sit","The situation"],["how","How to play"],["steps","Step by step"],["dossier","Case file"],["score","Scoring"]];
   app().innerHTML = header(S.team) + `
     <div class="tabs" role="tablist">${tabs.map(([k,l]) =>
       `<button role="tab" aria-selected="${tab===k}" onclick="briefTab('${k}')">${l}</button>`).join("")}</div>
@@ -1816,7 +1801,7 @@ function vFacilitator(){
   <div class="panel">
     <h3 class="sec">Timetable — 90 minutes</h3>
     <ol class="steps">
-      <li><span class="t">0:00–0:08</span><span><strong>Introduction.</strong> Tell the story yourself (the page → Recovery Team → "The situation" reads well aloud). Teams of about 6, with one laptop running Copilot and one device on this page per table. Remind them: instructions freeze at 0:33; 6 messages, one per day; only the agent's words; one free 25-word directive per team, unlocking on day 4; looking at the page source spoils the game. Point everyone at the "How to play" tab for the diagram, and non-native speakers at "Key words".</span></li>
+      <li><span class="t">0:00–0:08</span><span><strong>Introduction.</strong> Tell the story yourself (the page → Recovery Team → "The situation" reads well aloud). Teams of about 6, with one laptop running Copilot and one device on this page per table. Remind them: instructions freeze at 0:33; 6 messages, one per day; only the agent's words; one free 25-word directive per team, unlocking on day 4; looking at the page source spoils the game. Point everyone at the "How to play" tab for the diagram.</span></li>
       <li><span class="t">0:08–0:33</span><span><strong>Stage 1 — making the prompt.</strong> This is where the real teamwork happens. Tables build one prompt in Notepad or Word: the Simulation Header copied word for word, then their own instructions underneath. Watch for tables that start typing straight into Copilot — they lose the ability to edit as a group. Give 10-minute and 2-minute warnings. At 0:33: "Prompts frozen — paste into Copilot, tick the box, open the channel."</span></li>
       <li><span class="t">0:33–1:05</span><span><strong>The negotiation.</strong> Teams go at their own speed, about 5 minutes per round. Walk around; check they are copying the agent's words exactly. From day 4 the directive button unlocks — nudge tables that have not noticed it, and read a good directive or two aloud later. Teams that finish early go to their results screen — there is plenty there to argue about.</span></li>
       <li><span class="t">1:05–1:10</span><span><strong>Sending in results.</strong> Every table sends its result from the results screen, and the leaderboard fills up on the projector. If a team is late: stop anyway — the deadline is part of the story.</span></li>
