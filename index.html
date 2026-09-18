@@ -126,6 +126,7 @@
   .msg .who{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;margin-bottom:7px;display:flex;gap:10px;align-items:center}
   .msg.them{align-self:flex-start;background:var(--panel-2);border-left:3px solid var(--critical)}
   .msg.them .who{color:var(--critical)}
+  .msg .who .stamp{color:var(--ink-3);letter-spacing:.12em}
   .msg.us{align-self:flex-end;background:#101A16;border-right:3px solid var(--calm)}
   .msg.us .who{color:var(--calm);justify-content:flex-end}
   .msg.sys{align-self:center;background:none;border:1px dashed var(--line);color:var(--ink-2);font-size:14px}
@@ -943,6 +944,14 @@ function bandClass(b){ return {CALM:"calm",TENSE:"tense",VOLATILE:"volatile",CRI
 /* The engine's band keys stay as they are (saved games carry them); these are the
    plain-English words the room actually sees. */
 function bandLabel(b){ return {CALM:"CALM",TENSE:"TENSE",VOLATILE:"ANGRY",CRITICAL:"DANGER"}[b] || b || "—"; }
+/* When each answer came back. The crew call at whatever hour suits them — the
+   day-5 call lands at half past two in the morning, which is the point — but
+   the hours are fixed, because the game is deterministic and two devices
+   playing the same game must show the same transcript. */
+const CHANNEL_TIME = ["",
+  "Day 1 · 09:25 UTC", "Day 2 · 06:50 UTC", "Day 3 · 05:15 UTC",
+  "Day 4 · 11:40 UTC", "Day 5 · 02:30 UTC", "Day 6 · 08:05 UTC"];
+function stamp(round){ return CHANNEL_TIME[round] || ""; }
 function outcomeLabel(o){ return {clean:"SATELLITE RECOVERED",afterCritical:"RECOVERED, ONLY JUST",noResolution:"NO DEAL — GOES TO COURT",catastrophic:"SATELLITE LOST"}[o] || "—"; }
 function outcomePill(o){ return {clean:"calm",afterCritical:"tense",noResolution:"volatile",catastrophic:"critical"}[o] || "none"; }
 const WHY = {
@@ -1428,7 +1437,7 @@ function vConsole(){
     <div>
       <div class="panel">
         <div class="feed" id="feed">${S.transcript.map(m => m.who==="them"
-          ? `<div class="msg them"><div class="who"><span>VULTURE · Salvage Crew</span><span class="pill ${bandClass(m.band)}">${bandLabel(m.band)}</span></div><pre>${esc(m.text)}</pre></div>`
+          ? `<div class="msg them"><div class="who"><span>VULTURE · Salvage Crew</span>${stamp(m.round) ? `<span class="stamp">${stamp(m.round)}</span>` : ""}<span class="pill ${bandClass(m.band)}">${bandLabel(m.band)}</span></div><pre>${esc(m.text)}</pre></div>`
           : m.who==="us"
           ? `<div class="msg us"><div class="who"><span>OUR AGENT · Message ${m.round}</span></div><pre>${esc(m.text)}</pre>${m.decl?`<div class="mono dim" style="font-size:11.5px;margin-top:8px">${esc(m.decl)}</div>`:""}</div>`
           : `<div class="msg sys">${esc(m.text)}</div>`).join("")}
