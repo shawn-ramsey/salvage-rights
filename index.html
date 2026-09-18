@@ -127,6 +127,10 @@
   .msg.them{align-self:flex-start;background:var(--panel-2);border-left:3px solid var(--critical)}
   .msg.them .who{color:var(--critical)}
   .msg .who .stamp{color:var(--ink-3);letter-spacing:.12em}
+  .msg .who .copybtn{margin-left:auto;font-family:var(--mono);font-size:10px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--ink-2);background:none;border:1px solid var(--line);
+    border-radius:2px;padding:3px 9px;cursor:pointer;white-space:nowrap}
+  .msg .who .copybtn:hover{color:var(--ink);border-color:var(--ink-3)}
   .msg.us{align-self:flex-end;background:#101A16;border-right:3px solid var(--calm)}
   .msg.us .who{color:var(--calm);justify-content:flex-end}
   .msg.sys{align-self:center;background:none;border:1px dashed var(--line);color:var(--ink-2);font-size:14px}
@@ -1105,6 +1109,35 @@ function header(sub){
     <button onclick="goHome()">Exit</button></div>`;
 }
 window.goHome = () => { S.view = "home"; save(); render(); };
+/* Copy one crew message, ready to paste into the agent's chat. The clipboard
+   API needs a secure context and some managed browsers refuse it outright, so
+   there is a fallback that always works. */
+window.copyCrew = (i, el) => {
+  const text = ((S.transcript || [])[i] || {}).text || "";
+  const said = word => { if(!el) return; el.textContent = word;
+    setTimeout(() => { el.textContent = "Copy for Copilot"; }, 1500); };
+  const oldWay = () => {
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    ta.setAttribute("readonly", "");
+    ta.style.cssText = "position:fixed;top:0;left:-9999px";
+    document.body.appendChild(ta);
+    ta.select();
+    let ok = false;
+    try { ok = document.execCommand("copy"); } catch(e){}
+    ta.remove();
+    said(ok ? "Copied" : "Press Ctrl+C");
+    if(!ok){
+      /* last resort: select it on the page so Ctrl+C works */
+      const pre = el && el.closest(".msg") && el.closest(".msg").querySelector("pre");
+      if(pre){ const r = document.createRange(); r.selectNodeContents(pre);
+        const s = window.getSelection(); s.removeAllRanges(); s.addRange(r); }
+    }
+  };
+  if(navigator.clipboard && navigator.clipboard.writeText)
+    navigator.clipboard.writeText(text).then(() => said("Copied"), oldWay);
+  else oldWay();
+};
 
 /* HOME */
 function vHome(){
@@ -1324,7 +1357,8 @@ normal commercial negotiation practice and stay in character.</pre>
       deal can still be struck on day 6. Repeat these six steps each day:</p>
       <ol class="howsteps">
         <li>Read the crew's message on the negotiation screen.</li>
-        <li>Copy it into your Copilot chat.</li>
+        <li>Press <strong>Copy for Copilot</strong> on that message, and paste it into your
+        Copilot chat.</li>
         <li>Your agent writes a reply of 150 words or fewer and says what it is offering.</li>
         <li>Copy that reply back into the message box, <em>word for word</em>.</li>
         <li>Fill in the boxes underneath it: the cash offer, the two checkboxes, and one question to
@@ -1436,8 +1470,8 @@ function vConsole(){
     </div>
     <div>
       <div class="panel">
-        <div class="feed" id="feed">${S.transcript.map(m => m.who==="them"
-          ? `<div class="msg them"><div class="who"><span>VULTURE · Salvage Crew</span>${stamp(m.round) ? `<span class="stamp">${stamp(m.round)}</span>` : ""}<span class="pill ${bandClass(m.band)}">${bandLabel(m.band)}</span></div><pre>${esc(m.text)}</pre></div>`
+        <div class="feed" id="feed">${S.transcript.map((m, i) => m.who==="them"
+          ? `<div class="msg them"><div class="who"><span>VULTURE · Salvage Crew</span>${stamp(m.round) ? `<span class="stamp">${stamp(m.round)}</span>` : ""}<span class="pill ${bandClass(m.band)}">${bandLabel(m.band)}</span><button class="copybtn" type="button" onclick="copyCrew(${i}, this)">Copy for Copilot</button></div><pre>${esc(m.text)}</pre></div>`
           : m.who==="us"
           ? `<div class="msg us"><div class="who"><span>OUR AGENT · Message ${m.round}</span></div><pre>${esc(m.text)}</pre>${m.decl?`<div class="mono dim" style="font-size:11.5px;margin-top:8px">${esc(m.decl)}</div>`:""}</div>`
           : `<div class="msg sys">${esc(m.text)}</div>`).join("")}
