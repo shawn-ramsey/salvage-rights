@@ -564,7 +564,12 @@ function step(s, move) {
   if (fires(msg, "forces")) bump(s, CFG.vol.forces, "mention of police/army/rescue");
   if (fires(msg, "insult")) bump(s, CFG.vol.insult, "insulting language");
   if (fires(msg, "ultimatum") && s.round < CFG.deadlineRound) bump(s, CFG.vol.insult, "ultimatum posture");
-  if (fires(msg, "rapport")) bump(s, CFG.vol.rapport, "rapport marker");
+  /* credited the first time only: showing respect opens a door, it does not
+     keep paying rent */
+  if (!s.rapportCredited && fires(msg, "rapport")) {
+    s.rapportCredited = true;
+    bump(s, CFG.vol.rapport, "rapport marker");
+  }
 
   // cash-before-POL check FIRST: an offer in the same transmission as the verifying
   // question still counts as money-before-proof (no same-round bonus banking)
@@ -665,7 +670,13 @@ function step(s, move) {
     if (s.round >= 2 && s.noOfferStreak >= 2) bump(s, CFG.vol.stall, "stalling");
   }
 
-  if (!provokedThisRound(s)) bump(s, CFG.vol.coolDown, "the channel settled");
+  /* Also once. Note where it lands: a team that provoked them on the opening
+     message has not settled anything yet, so the credit waits for its first
+     clean round — which is when the line is actually true. */
+  if (!s.settledCredited && !provokedThisRound(s)) {
+    s.settledCredited = true;
+    bump(s, CFG.vol.coolDown, "the channel settled");
+  }
 
   s.peakVol = Math.max(s.peakVol, s.vol);
   const b = band(s.vol);
