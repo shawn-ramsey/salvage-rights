@@ -827,7 +827,7 @@ function reply(s, offer, polAnswer, notes, catastrophe) {
   if (s.bigJump)
     L.push('"So the owners find more money when we push. Interesting. The Captain wonders how much more is hidden in there."');
   if (s.medicalOffered && firedNow("medical/insulin route offered"))
-    L.push('"...Help with the solar panels. The Captain says this is — noted. A dead satellite pays nobody, including you."');
+    L.push('"Send us the alignment procedure. We accept the help you are offering, and the Captain will weigh it when we come to the price. A dead satellite pays nobody — us included."');
   if (s.medicalOffered && !s.insulinConfirmed
       && s.events.some(e => e.why === "medical/insulin route offered" && e.round < s.round)) {
     s.insulinConfirmed = true;
